@@ -19,7 +19,7 @@ class CustomButton extends StatelessWidget {
         onPressed: onPressed,
         style: ElevatedButton.styleFrom(
           foregroundColor: Colors.white, // White text color
-          backgroundColor: Color(0xFF0099FF), // Blue background color
+          backgroundColor: const Color(0xFF0099FF), // Blue background color
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(15.r), 
           ),

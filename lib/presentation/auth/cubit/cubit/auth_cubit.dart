@@ -1,53 +1,56 @@
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:instagram_clone_app/core/web_services/auth_service.dart';
+import 'package:instagram_clone_app/data/repository/auth/auth_repository.dart';
 import 'package:meta/meta.dart';
+
 
 part 'auth_state.dart';
 
 class AuthCubit extends Cubit<AuthState> {
-  AuthCubit(this.authService) : super(AuthInitial());
-  final AuthService authService;
+  AuthCubit(this._authRepository) : super(AuthInitial());
+  final AuthRepository _authRepository;
 
   static AuthCubit get(context) => BlocProvider.of(context);
 
   Future<void> signUpEmailPassword(
-      {required String email, required String password}) async {
-    emit(AuthLoading());
-
-    authService
-        .registerWithEmailPassword(email: email, password: password)
-        .then((user) {
-
-      emit(AuthSuccess());
-    }).catchError((e) {
-      emit(AuthError(e.toString()));
-    });
+      {required String email,
+      required String password,
+      required String displayName}) async {
+    try {
+      emit(RegisterLoading());
+    await  _authRepository.registerWithEmailPassword(
+          email: email, password: password, displayName: displayName);
+      emit(RegisterSuccess());
+    } on FirebaseAuthException catch (e) {
+      emit(RegisterError(e.message.toString()));
+    } catch (e) {
+      emit(RegisterError(e.toString()));
+    }
   }
 
   Future<void> signInEmailPassword({required email, required password}) async {
-    emit(AuthLoading());
+    emit(LoginLoading());
     try {
-      User? user = await authService.loginWithEmailPassword(
+      User? user = await _authRepository.loginWithEmailPassword(
           email: email, password: password);
       if (user != null) {
-        emit(AuthSuccess());
-      } else {
-        emit(AuthError('Error'));
+        emit(LoginSuccess());
       }
+    } on FirebaseAuthException catch (e) {
+      emit(LoginError(e.message.toString()));
     } catch (e) {
-      emit(AuthError(e.toString()));
+      emit(LoginError(e.toString()));
     }
   }
 
   Future<void> logOut() async {
-    emit(AuthLoading());
+    emit(LogoutLoading());
     try {
-      await authService.logout();
-      emit(AuthSuccess());
+      await _authRepository.logout();
+      emit(LogoutSuccess());
     } catch (e) {
-      emit(AuthError(e.toString()));
+      emit(LogoutError(e.toString()));
     }
   }
 }

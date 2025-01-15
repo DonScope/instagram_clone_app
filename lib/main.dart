@@ -2,12 +2,15 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:instagram_clone_app/config/app_colors/app_colors.dart';
 import 'package:instagram_clone_app/core/helpers/cache_helper.dart';
 import 'package:instagram_clone_app/core/web_services/api_client.dart';
 import 'package:instagram_clone_app/core/web_services/auth_service.dart';
+import 'package:instagram_clone_app/data/repository/auth/auth_repository.dart';
 import 'package:instagram_clone_app/firebase_options.dart';
 import 'package:instagram_clone_app/presentation/auth/cubit/cubit/auth_cubit.dart';
 import 'package:instagram_clone_app/presentation/auth/ui/login_screen.dart';
+import 'package:instagram_clone_app/presentation/edit_profile/ui/edit_profile_screen.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 void main() async {
@@ -34,20 +37,21 @@ class MyApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (context) => AuthCubit(AuthService()),
+          create: (context) => AuthCubit(AuthRepository(AuthService())),
         ),
       ],
       child: ScreenUtilInit(
-        designSize: const Size(375, 812),
+        designSize: const Size(430, 944),
                minTextAdapt: true,
           splitScreenMode: true,
         child: MaterialApp(
             title: 'Flutter Demo',
             theme: ThemeData(
               useMaterial3: true,
+              scaffoldBackgroundColor: scaffoldBackground,
             ),
             debugShowCheckedModeBanner: false,
-            home: const LoginScreen()
+            home: const EditProfileScreen()
             ),
       ),
     );

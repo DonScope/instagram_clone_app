@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../config/app_colors/app_colors.dart';
+import '../../../config/app_colors/app_colors.dart';
 
 class CustomTextField extends StatelessWidget {
   final String labelText;
@@ -22,7 +22,7 @@ class CustomTextField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
-      style: TextStyle(color: Colors.white),
+      style: TextStyle(color: textPrimary),
       
       validator: validator,
       controller: controller,
@@ -30,7 +30,7 @@ class CustomTextField extends StatelessWidget {
       decoration: InputDecoration(
 
         labelText: labelText,
-        labelStyle: TextStyle(color: textPrimary),
+        labelStyle: TextStyle(color: textSecondary),
         prefixIcon: prefix != null ? prefix : null,
         suffixIcon: ic != null ? ic : null,
         suffixIconColor: iconPrimary,
@@ -48,7 +48,7 @@ class CustomTextField extends StatelessWidget {
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(15.r),
           borderSide: BorderSide(
-            color: Color.fromRGBO(22, 31, 40, 1),
+            color: border,
             width: 0.5.w,
           ),
         ),
@@ -58,7 +58,7 @@ class CustomTextField extends StatelessWidget {
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(15.r),
           borderSide: BorderSide(
-            color:  Color(0xFF8C6658),
+            color:  borderFocused,
             width: 2.0.w,
           ),
         ),
