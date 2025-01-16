@@ -1,8 +1,12 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:instagram_clone_app/config/app_colors/app_colors.dart';
+import 'package:instagram_clone_app/core/helpers/cache_helper.dart';
 import 'package:instagram_clone_app/core/helpers/navigation_helper.dart';
+import 'package:instagram_clone_app/presentation/edit_profile/ui/edit_profile_screen.dart';
 import 'package:instagram_clone_app/shared_widgets/custom_button.dart';
 import 'package:instagram_clone_app/shared_widgets/vertical_spacer.dart';
 import 'package:instagram_clone_app/presentation/auth/cubit/cubit/auth_cubit.dart';
@@ -19,7 +23,7 @@ class LoginScreen extends StatelessWidget {
     TextEditingController _emailController = TextEditingController();
     TextEditingController _passwordController = TextEditingController();
     final _formKey = GlobalKey<FormState>();
-        final ValueNotifier<bool> _obscureTextNotifier = ValueNotifier<bool>(true);
+    final ValueNotifier<bool> _obscureTextNotifier = ValueNotifier<bool>(true);
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -42,20 +46,19 @@ class LoginScreen extends StatelessWidget {
               const VerticalSpacer(
                 size: 20,
               ),
-          CustomTextField(
-                      labelText: "Password",
-                      controller: _passwordController,
-                      obscureText: _obscureTextNotifier.value,
-                      validator: Validators.validatePassword,
-                      ic: IconButton(
-                          onPressed: () {
-                            _obscureTextNotifier.value =
-                                !_obscureTextNotifier.value;
-                          },
-                          icon: Icon(_obscureTextNotifier.value
-                              ? Icons.visibility_off
-                              : Icons.visibility)),
-                    ),
+              CustomTextField(
+                labelText: "Password",
+                controller: _passwordController,
+                obscureText: _obscureTextNotifier.value,
+                validator: Validators.validatePassword,
+                ic: IconButton(
+                    onPressed: () {
+                      _obscureTextNotifier.value = !_obscureTextNotifier.value;
+                    },
+                    icon: Icon(_obscureTextNotifier.value
+                        ? Icons.visibility_off
+                        : Icons.visibility)),
+              ),
               const VerticalSpacer(
                 size: 20,
               ),
@@ -69,13 +72,13 @@ class LoginScreen extends StatelessWidget {
                         return const Center(child: CircularProgressIndicator());
                       },
                     );
-                  } else if (state is LoginSuccess) {
+                  } else if (state is LoginSuccess)  {
                     Navigator.of(context, rootNavigator: true).pop();
                     // NAVIGATE TO HOME SCREEN
-                    // NavigationHelper.goOffAll(context, navigator());
+                    NavigationHelper.goOffAll(context, EditProfileScreen());
                   } else if (state is LoginError) {
                     Navigator.of(context, rootNavigator: true).pop();
-          
+
                     showDialog(
                       context: context,
                       builder: (context) {
@@ -85,7 +88,8 @@ class LoginScreen extends StatelessWidget {
                           actions: [
                             TextButton(
                               onPressed: () {
-                                Navigator.of(context, rootNavigator: true).pop();
+                                Navigator.of(context, rootNavigator: true)
+                                    .pop();
                               },
                               child: const Text('Close'),
                             ),
@@ -101,11 +105,10 @@ class LoginScreen extends StatelessWidget {
                       text: "Login",
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {
-                            cubit.signInEmailPassword(
-                            email: _emailController.text,
-                            password: _passwordController.text);
+                          cubit.signInEmailPassword(
+                              email: _emailController.text,
+                              password: _passwordController.text);
                         }
-                  
                       });
                 },
               ),

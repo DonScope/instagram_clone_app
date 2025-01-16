@@ -1,22 +1,24 @@
 class UserModel {
-  String? id;
+  String? uId;
   String? name;
   String? email;
-  UserModel({
-    this.id,
-    this.email,
-    this.name,
-  });
+  String? profilePicUrl;
+  String? bio;
+  UserModel({this.uId, this.email, this.name, this.profilePicUrl, this.bio});
   UserModel.formJson(Map<String, dynamic> json) {
-    id = json["id"];
+    uId = json["uId"];
     name = json["name"];
     email = json["email"];
+    profilePicUrl = json["profilePicUrl"];
+    bio = json["bio"];
   }
   Map<String, dynamic> toJson() {
     return {
-      "id": id,
+      "uId": uId,
       "name": name,
       "email": email,
+      "profilePicUrl": profilePicUrl,
+      "bio": bio
     };
   }
 }

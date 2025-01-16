@@ -1,3 +1,4 @@
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:instagram_clone_app/core/helpers/cache_helper.dart';
@@ -22,21 +23,20 @@ class AuthService {
 
       // Save user data to Firestore
       await setUser(
-        id: result.user!.uid,
+        uId: result.user!.uid,
         name: displayName,
         email: email,
       );
 
       // Save user ID to local cache
       CacheHelper.setData(key: "uId", value: result.user!.uid);
-
       return result.user;
     } on FirebaseAuthException catch (e) {
       print('Firebase Auth Error during registration: ${e.message}');
-      rethrow; 
+      rethrow;
     } catch (e) {
       print('Unexpected Error during registration: $e');
-      rethrow; 
+      rethrow;
     }
   }
 
@@ -57,30 +57,33 @@ class AuthService {
       return result.user;
     } on FirebaseAuthException catch (e) {
       print('Firebase Auth Error during login: ${e.message}');
-      rethrow; 
+      rethrow;
     } catch (e) {
       print('Unexpected Error during login: $e');
-       rethrow; 
+      rethrow;
     }
   }
 
   // Save user data to Firestore
   Future<void> setUser({
-    required String id,
+    required String uId,
     required String name,
     required String email,
+    String bio = '',
   }) async {
     try {
       UserModel userModel = UserModel(
-        id: id,
+        uId: uId,
         name: name,
         email: email,
+        profilePicUrl: null,
+        bio: bio,
       );
 
-      await _firestore.collection('users').doc(id).set(userModel.toJson());
+      await _firestore.collection('users').doc(uId).set(userModel.toJson());
     } catch (e) {
       print('Error saving user to Firestore: $e');
-      rethrow; 
+      rethrow;
     }
   }
 

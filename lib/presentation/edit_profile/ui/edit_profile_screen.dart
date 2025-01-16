@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:instagram_clone_app/config/app_colors/app_colors.dart';
@@ -27,7 +28,8 @@ class EditProfileScreen extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   TextButton(
-                      onPressed: () {},
+                      onPressed: () {
+                      },
                       child: Text(
                         "Cancel",
                         style: TextStyle(color: error, fontSize: 16.sp),

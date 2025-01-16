@@ -1,9 +1,10 @@
+import 'dart:developer';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:instagram_clone_app/core/helpers/cache_helper.dart';
 import 'package:instagram_clone_app/data/repository/auth/auth_repository.dart';
 import 'package:meta/meta.dart';
-
 
 part 'auth_state.dart';
 
@@ -19,7 +20,7 @@ class AuthCubit extends Cubit<AuthState> {
       required String displayName}) async {
     try {
       emit(RegisterLoading());
-    await  _authRepository.registerWithEmailPassword(
+      await _authRepository.registerWithEmailPassword(
           email: email, password: password, displayName: displayName);
       emit(RegisterSuccess());
     } on FirebaseAuthException catch (e) {
@@ -36,6 +37,7 @@ class AuthCubit extends Cubit<AuthState> {
           email: email, password: password);
       if (user != null) {
         emit(LoginSuccess());
+        log("User ID: ${CacheHelper.getData(key: "uId")}");
       }
     } on FirebaseAuthException catch (e) {
       emit(LoginError(e.message.toString()));

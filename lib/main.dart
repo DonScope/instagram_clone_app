@@ -10,7 +10,6 @@ import 'package:instagram_clone_app/data/repository/auth/auth_repository.dart';
 import 'package:instagram_clone_app/firebase_options.dart';
 import 'package:instagram_clone_app/presentation/auth/cubit/cubit/auth_cubit.dart';
 import 'package:instagram_clone_app/presentation/auth/ui/login_screen.dart';
-import 'package:instagram_clone_app/presentation/edit_profile/ui/edit_profile_screen.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 void main() async {
@@ -42,8 +41,8 @@ class MyApp extends StatelessWidget {
       ],
       child: ScreenUtilInit(
         designSize: const Size(430, 944),
-               minTextAdapt: true,
-          splitScreenMode: true,
+        minTextAdapt: true,
+        splitScreenMode: true,
         child: MaterialApp(
             title: 'Flutter Demo',
             theme: ThemeData(
@@ -51,8 +50,7 @@ class MyApp extends StatelessWidget {
               scaffoldBackgroundColor: scaffoldBackground,
             ),
             debugShowCheckedModeBanner: false,
-            home: const EditProfileScreen()
-            ),
+            home: const LoginScreen()),
       ),
     );
   }
