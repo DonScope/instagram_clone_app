@@ -6,14 +6,13 @@ import 'package:instagram_clone_app/shared_widgets/horizontal_spacer.dart';
 class ProfileField extends StatelessWidget {
   final String label;
   final TextEditingController controller;
-  final ValueChanged<String> onChanged;
   final FormFieldValidator<String>? validator;
   const ProfileField({
     Key? key,
     required this.label,
     required this.controller,
-    required this.onChanged,
-    this.validator,
+    this.validator
+    
   }) : super(key: key);
 
   @override
@@ -40,7 +39,6 @@ class ProfileField extends StatelessWidget {
             child: CustomProfileFormField(
               controller: controller,
               validator: validator,
-              onChanged: onChanged,
             ),
           )
         ],

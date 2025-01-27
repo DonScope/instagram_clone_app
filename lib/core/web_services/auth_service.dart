@@ -7,6 +7,7 @@ import '../../data/models/user_model.dart';
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+final defaultPfpUrl = 'https://icrbvpqtwskkgenybdyk.supabase.co/storage/v1/object/public/profile-pictures/default_profile.png?t=2025-01-22T00%3A47%3A39.205Z';
 
   // Register
   Future<User?> registerWithEmailPassword({
@@ -26,6 +27,7 @@ class AuthService {
         uId: result.user!.uid,
         name: displayName,
         email: email,
+        
       );
 
       // Save user ID to local cache
@@ -76,7 +78,7 @@ class AuthService {
         uId: uId,
         name: name,
         email: email,
-        profilePicUrl: null,
+        profilePicUrl: defaultPfpUrl,
         bio: bio,
       );
 

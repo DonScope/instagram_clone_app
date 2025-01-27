@@ -6,10 +6,15 @@ import 'package:instagram_clone_app/config/app_colors/app_colors.dart';
 import 'package:instagram_clone_app/core/helpers/cache_helper.dart';
 import 'package:instagram_clone_app/core/web_services/api_client.dart';
 import 'package:instagram_clone_app/core/web_services/auth_service.dart';
+import 'package:instagram_clone_app/core/web_services/user_service.dart';
 import 'package:instagram_clone_app/data/repository/auth/auth_repository.dart';
+import 'package:instagram_clone_app/data/repository/user_services/user_repository.dart';
 import 'package:instagram_clone_app/firebase_options.dart';
 import 'package:instagram_clone_app/presentation/auth/cubit/cubit/auth_cubit.dart';
 import 'package:instagram_clone_app/presentation/auth/ui/login_screen.dart';
+import 'package:instagram_clone_app/presentation/edit_profile/cubit/edit_profile_cubit.dart';
+import 'package:instagram_clone_app/presentation/profile/cubit/profile/profile_cubit.dart';
+import 'package:instagram_clone_app/presentation/profile/ui/profile_screen.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 void main() async {
@@ -38,19 +43,41 @@ class MyApp extends StatelessWidget {
         BlocProvider(
           create: (context) => AuthCubit(AuthRepository(AuthService())),
         ),
+        BlocProvider(
+          create: (context) => EditProfileCubit(UserRepository(UserService())),
+        ),
+           BlocProvider(
+          create: (context) => ProfileCubit(UserRepository(UserService())),
+        ),
       ],
       child: ScreenUtilInit(
         designSize: const Size(430, 944),
         minTextAdapt: true,
         splitScreenMode: true,
         child: MaterialApp(
-            title: 'Flutter Demo',
-            theme: ThemeData(
-              useMaterial3: true,
-              scaffoldBackgroundColor: scaffoldBackground,
+          title: 'Flutter Demo',
+          theme: ThemeData(
+            useMaterial3: true,
+            scaffoldBackgroundColor: scaffoldBackground,
+            colorScheme: ColorScheme.light(
+              primary: iconPrimary
             ),
-            debugShowCheckedModeBanner: false,
-            home: const LoginScreen()),
+                 textTheme: const TextTheme(
+          bodyLarge: TextStyle(color: textPrimary), // Default for large text
+          bodyMedium: TextStyle(color: textPrimary), // Default for medium text
+          bodySmall: TextStyle(color: textPrimary), // Default for small text
+        ),
+        primaryTextTheme: const TextTheme(
+          bodyLarge: TextStyle(color: textPrimary),
+          bodyMedium: TextStyle(color: textPrimary),
+          bodySmall: TextStyle(color: textPrimary),
+        ),
+          ),
+          debugShowCheckedModeBanner: false,
+          home: CacheHelper.getData(key: "uId") == null
+              ? LoginScreen()
+              : ProfileScreen(),
+        ),
       ),
     );
   }

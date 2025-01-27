@@ -20,7 +20,6 @@ class RegisterScreen extends StatelessWidget {
     TextEditingController _passwordController = TextEditingController();
     TextEditingController _usernameController = TextEditingController();
     final _formKey = GlobalKey<FormState>();
-
     final ValueNotifier<bool> _obscureTextNotifier = ValueNotifier<bool>(true);
 
     return Scaffold(

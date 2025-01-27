@@ -1,137 +1,97 @@
+import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:instagram_clone_app/config/app_colors/app_colors.dart';
-import 'package:instagram_clone_app/presentation/edit_profile/widgets/ProfileField.dart';
-import 'package:instagram_clone_app/shared_widgets/vertical_spacer.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:instagram_clone_app/presentation/edit_profile/cubit/edit_profile_cubit.dart';
+import 'package:instagram_clone_app/presentation/edit_profile/ui/edit_profile_form.dart';
+
+import '../../../data/models/user_model.dart';
 
 class EditProfileScreen extends StatelessWidget {
-  const EditProfileScreen({super.key});
+  EditProfileScreen({super.key});
+
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _bioController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _phoneController = TextEditingController();
+
+  final ImagePicker _picker = ImagePicker();
+
+  Future<void> _pickImage(BuildContext context) async {
+    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+
+    if (pickedFile != null) {
+      final imageFile = File(pickedFile.path);
+      await EditProfileCubit.get(context).uploadProfilePicture(
+        imageFile,
+      );
+      EditProfileCubit.get(context).fetchUserData();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    TextEditingController _nameController = TextEditingController();
-    TextEditingController _usernameController = TextEditingController();
-    TextEditingController _websiteController = TextEditingController();
-    TextEditingController _bioController = TextEditingController();
-    TextEditingController _emailController = TextEditingController();
-    TextEditingController _phoneController = TextEditingController();
-    TextEditingController _genderController = TextEditingController();
-
+    EditProfileCubit.get(context).fetchUserData();    
     return Scaffold(
       body: SafeArea(
         child: Padding(
-          padding: EdgeInsets.all(8.0),
-          child: Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  TextButton(
-                      onPressed: () {
-                      },
-                      child: Text(
-                        "Cancel",
-                        style: TextStyle(color: error, fontSize: 16.sp),
-                      )),
-                  Text(
-                    "Edit Profile",
-                    style: TextStyle(
-                        color: textPrimary,
-                        fontSize: 16.sp,
-                        fontWeight: FontWeight.bold),
-                  ),
-                  TextButton(
-                      onPressed: () {},
-                      child: Text(
-                        "Done",
-                        style: TextStyle(color: buttonPrimary, fontSize: 16.sp),
-                      )),
-                ],
-              ),
-              const VerticalSpacer(
-                size: 15,
-              ),
-              const CircleAvatar(
-                radius: 50,
-                backgroundColor: primary,
-                // backgroundImage: AssetImage("assets/images/profile.jpg"),
-              ),
-              const VerticalSpacer(
-                size: 10,
-              ),
-              TextButton(
-                  onPressed: () {},
-                  child: const Text(
-                    "Change Profile Photo",
-                    style: TextStyle(color: Colors.blue),
-                  )),
-              ProfileField(
-                label: "Name",
-                controller: _nameController,
-                onChanged: (value) {},
-              ),
-              ProfileField(
-                label: "Username",
-                controller: _usernameController,
-                onChanged: (value) {},
-              ),
-              ProfileField(
-                label: "Website",
-                controller: _websiteController,
-                onChanged: (value) {},
-              ),
-              ProfileField(
-                label: "Bio",
-                controller: _bioController,
-                onChanged: (value) {},
-              ),
-              VerticalSpacer(size: 15),
-              Divider(
-                color: divider,
-              ),
-              VerticalSpacer(size: 15),
-              Align(
-                alignment: Alignment.centerLeft,
-                child: SizedBox(
-                  width: 260.w,
-                  child: InkWell(
-                      onTap: () {},
-                      child: Text(
-                        "Switch to Professional Account",
-                        style: TextStyle(color: buttonPrimary, fontSize: 16.sp),
-                      )),
-                ),
-              ),
-              VerticalSpacer(size: 20),
-              Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    "Private Information",
-                    style: TextStyle(
-                        color: textPrimary,
-                        fontSize: 16.sp,
-                        fontWeight: FontWeight.bold),
-                  )),
-              ProfileField(
-                label: "Email",
-                controller: _emailController,
-                onChanged: (value) {},
-              ),
-              ProfileField(
-                label: "Phone",
-                controller: _phoneController,
-                onChanged: (value) {},
-              ),
-              ProfileField(
-                label: "Gender",
-                controller: _genderController,
-                onChanged: (value) {},
-              )
-            ],
+          padding: const EdgeInsets.all(8.0),
+          child: BlocConsumer<EditProfileCubit, EditProfileState>(
+            listener: (context, state) {
+              if (state is UserFetchError) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text(state.error.toString())),
+                );
+              } else if (state is EditProfileSuccess) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text("Profile updated successfully!")),
+                );
+              }
+            },
+            builder: (context, state) {
+              if (state is UserFetchLoading) {
+                return const Center(child: CircularProgressIndicator());
+              } else if (state is UserFetchSuccess) {
+                final userData = state.userData;
+
+                _nameController.text = userData.name ?? '';
+                _usernameController.text = userData.userName ?? '';
+                _bioController.text = userData.bio ?? '';
+                _emailController.text = userData.email ?? '';
+                _phoneController.text = userData.phoneNumber ?? '';
+
+                return EditProfileForm(
+                  nameController: _nameController,
+                  usernameController: _usernameController,
+                  bioController: _bioController,
+                  emailController: _emailController,
+                  phoneController: _phoneController,
+                  profilePictureUrl: userData.profilePicUrl,
+                  currentUsername: userData.userName ?? '',
+                  currentEmail: userData.email ?? '',
+                  onPickImage: () => _pickImage(context),
+                  onUpdate: () {
+                    final updatedUser = UserModel(
+                      name: _nameController.text,
+                      userName: _usernameController.text,
+                      bio: _bioController.text,
+                      email: _emailController.text,
+                      phoneNumber: _phoneController.text,
+                    );
+                    EditProfileCubit.get(context).updateUserData( updatedUser).then(
+                          (value) => EditProfileCubit.get(context).fetchUserData(),
+                        );
+                  },
+                );
+              }
+              return const Center(child: CircularProgressIndicator());
+            },
           ),
         ),
       ),
     );
   }
 }
+
