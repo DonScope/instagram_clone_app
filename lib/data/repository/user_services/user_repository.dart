@@ -1,10 +1,8 @@
 import 'dart:io';
 
-import 'package:instagram_clone_app/core/helpers/cache_helper.dart';
 import 'package:instagram_clone_app/core/web_services/user_service.dart';
 import 'package:instagram_clone_app/data/models/post_model.dart';
 import 'package:instagram_clone_app/data/models/user_model.dart';
-import 'package:uuid/uuid.dart';
 
 class UserRepository {
   final UserService _userService;
@@ -35,15 +33,21 @@ class UserRepository {
     }
   }
 
-  Future<void> uploadPost({required dynamic file, String? caption}) async {
-    final mediaUrl = await _userService.uploadMediaToSupabase(imageFile: file);
+  Future<void> uploadPost({required File mediaFile, String? caption}) async {
+    final mediaUrl =
+        await _userService.uploadMediaToSupabase(mediaFile: mediaFile);
 
     final post = PostModel(
-        id: const Uuid().v4(),
-        uId: CacheHelper.getData(key: "uId"),
-        mediaUrl: mediaUrl,
-        caption: caption,
-        createdAt: DateTime.now());
-    await _userService.insertPostToDatabase(post);
+        mediaUrl: mediaUrl, caption: caption, createdAt: DateTime.now());
+    await _userService.insertPostToFireStore(post);
+  }
+
+  Future<List<PostModel>> getPosts() async {
+    try {
+      final response = await _userService.getPostsFromFireStore();
+      return response;
+    } catch (e) {
+      throw Exception("Failed to fetch posts inside repo: $e");
+    }
   }
 }

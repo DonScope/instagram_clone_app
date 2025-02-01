@@ -2,22 +2,24 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:instagram_clone_app/config/app_colors/app_colors.dart';
+import 'package:instagram_clone_app/core/helpers/post_picker_helper.dart';
 import 'package:instagram_clone_app/core/helpers/navigation_helper.dart';
 import 'package:instagram_clone_app/presentation/edit_profile/ui/edit_profile_screen.dart';
+import 'package:instagram_clone_app/presentation/profile/cubit/posts/post_cubit.dart';
 import 'package:instagram_clone_app/presentation/profile/cubit/profile/profile_cubit.dart';
 import 'package:instagram_clone_app/presentation/profile/ui/posts_grid.dart';
 import 'package:instagram_clone_app/presentation/profile/ui/reels_grid.dart';
 import 'package:instagram_clone_app/presentation/profile/ui/tagged_grid.dart';
 import 'package:instagram_clone_app/shared_widgets/horizontal_spacer.dart';
 import 'package:instagram_clone_app/shared_widgets/action_button.dart';
+import 'package:instagram_clone_app/shared_widgets/show_more_options.dart';
 import 'package:instagram_clone_app/shared_widgets/vertical_spacer.dart';
 
 class ProfileScreen extends StatelessWidget {
-  const ProfileScreen({super.key});
+  ProfileScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    ProfileCubit.get(context).fetchUserData();
     return BlocBuilder<ProfileCubit, ProfileState>(
       builder: (context, state) {
         if (state is ProfileFetchSuccess) {
@@ -45,7 +47,30 @@ class ProfileScreen extends StatelessWidget {
                           Row(
                             children: [
                               IconButton(
-                                onPressed: () {},
+                                onPressed: () {
+                                  showCustomBottomSheet(context, [
+                                    ListTile(
+                                        leading: Icon(
+                                          Icons.video_camera_back_rounded,
+                                        ),
+                                        title: Text('Reel')),
+                                    ListTile(
+                                      leading: Icon(
+                                        Icons.grid_on_sharp,
+                                      ),
+                                      title: Text('Post'),
+                                      onTap: () => ImagePickerHelper()
+                                          .pickAndUploadImage(context),
+                                    ),
+                                    ListTile(
+                                      leading: Icon(
+                                        Icons.add_box_outlined,
+                                      ),
+                                      title: Text('Story'),
+                                      onTap: () async {},
+                                    ),
+                                  ]);
+                                },
                                 icon: const Icon(Icons.add_box_outlined),
                               ),
                               IconButton(
@@ -71,15 +96,25 @@ class ProfileScreen extends StatelessWidget {
                             children: [
                               Column(
                                 children: [
-                                  const Text(
-                                    "1234",
-                                    style: TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold,
-                                    ),
+                                  BlocBuilder<PostCubit, PostState>(
+                                    buildWhen: (previous, current) =>
+                                        current is PostGetSuccess,
+                                    builder: (context, state) {
+                                      int postCount = 0;
+                                      if (state is PostGetSuccess) {
+                                        postCount = state.posts.length;
+                                      }
+                                      return Text(
+                                        "$postCount",
+                                        style: TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      );
+                                    },
                                   ),
-                                  Text("Posts")
+                                  Text("Posts"),
                                 ],
                               ),
                               HorizontalSpacer(),
@@ -183,7 +218,7 @@ class ProfileScreen extends StatelessWidget {
                           ActionButton(
                             icon: Icons.person_add_alt,
                             width: 40.w,
-                             height: 45.h,
+                            height: 45.h,
                             color: textDisabled,
                             iconColor: textPrimary,
                             onPressed: () {},
@@ -213,6 +248,13 @@ class ProfileScreen extends StatelessWidget {
                   ),
                 ),
               ),
+            ),
+          );
+        } else if (state is ProfileFetchError) {
+          return Center(
+            child: Text(
+              "Error occured, please try again later.",
+              style: TextStyle(color: error),
             ),
           );
         } else {

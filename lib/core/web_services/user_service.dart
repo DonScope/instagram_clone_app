@@ -2,12 +2,17 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:instagram_clone_app/core/helpers/cache_helper.dart';
 import 'package:instagram_clone_app/data/models/post_model.dart';
 import 'package:instagram_clone_app/data/models/user_model.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:uuid/uuid.dart';
 
 class UserService {
   final SupabaseClient _client = Supabase.instance.client;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  var uId = CacheHelper.getData(key: "uId");
+  // ################################ Profile Picture And Data ##########################################
   Future<String> uploadProfilePicture(
       {required String userId, required File imageFile}) async {
     try {
@@ -27,7 +32,7 @@ class UserService {
       final imageUrl =
           _client.storage.from('profile-pictures').getPublicUrl(filePath);
       await FirebaseFirestore.instance.collection('users').doc(userId).update({
-        'profilePictureUrl': imageUrl,
+        'profilePicUrl': imageUrl,
       });
 
       return imageUrl;
@@ -52,7 +57,7 @@ class UserService {
           throw Exception("User not found");
         }
       }
-      return null; // Return null if the document does not exist
+      return null;
     } catch (e) {
       throw Exception("Failed to fetch user data from Firestore: $e");
     }
@@ -69,13 +74,15 @@ class UserService {
     }
   }
 
-  Future<String> uploadMediaToSupabase({required dynamic imageFile}) async {
+  // ################################ POSTS SECTION ##########################################
+
+  Future<String> uploadMediaToSupabase({required File mediaFile}) async {
     try {
-      final filePath = 'media_${DateTime.now().millisecondsSinceEpoch}';
+      final filePath =
+          'media_${DateTime.now().millisecondsSinceEpoch}_${mediaFile.path}';
+      await _client.storage.from("posts").upload(filePath, mediaFile);
 
-      await _client.storage.from("posts").upload(filePath, imageFile);
-
-      final publicUrl = _client.storage.from('media').getPublicUrl(filePath);
+      final publicUrl = _client.storage.from('posts').getPublicUrl(filePath);
 
       return publicUrl;
     } catch (e) {
@@ -83,11 +90,43 @@ class UserService {
     }
   }
 
-  Future<void> insertPostToDatabase(PostModel post) async {
+  Future<void> insertPostToFireStore(PostModel post) async {
     try {
-      await _client.from('posts').insert(post.toJson());
+      await _firestore
+          .collection('users')
+          .doc(uId)
+          .collection('posts')
+          .doc(Uuid().v4().toString())
+          .set(post.toJson());
     } catch (e) {
       throw Exception("Database insertion failed: ${e.toString()}");
     }
+  }
+
+  Future<List<PostModel>> getPostsFromFireStore() async {
+    try {
+      final response = await _firestore
+          .collection('users')
+          .doc(uId)
+          .collection('posts')
+          .get();
+
+      // Map each document's data to a PostModel
+      final posts = response.docs.map((doc) {
+        return PostModel.fromJson(doc.data());
+      }).toList();
+
+      return posts; // Return the list of posts
+    } catch (e) {
+      throw Exception("Failed to fetch posts: $e");
+    }
+  }
+
+  Future<void> likePost(String postId) async {
+    final postRef = FirebaseFirestore.instance.collection('posts').doc(postId);
+
+    await postRef.update({
+      'likes_count': FieldValue.increment(1),
+    });
   }
 }

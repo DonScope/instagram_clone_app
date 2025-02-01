@@ -1,18 +1,16 @@
-import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:instagram_clone_app/config/app_colors/app_colors.dart';
-import 'package:instagram_clone_app/core/helpers/cache_helper.dart';
 import 'package:instagram_clone_app/core/helpers/navigation_helper.dart';
-import 'package:instagram_clone_app/presentation/edit_profile/ui/edit_profile_screen.dart';
 import 'package:instagram_clone_app/shared_widgets/custom_button.dart';
 import 'package:instagram_clone_app/shared_widgets/vertical_spacer.dart';
 import 'package:instagram_clone_app/presentation/auth/cubit/cubit/auth_cubit.dart';
 import 'package:instagram_clone_app/presentation/auth/widgets/custom_text_form_field.dart';
 
 import '../../../core/utils/validators.dart';
+import '../../profile/ui/profile_screen.dart';
 import 'register_screen.dart';
 
 class LoginScreen extends StatelessWidget {
@@ -75,7 +73,7 @@ class LoginScreen extends StatelessWidget {
                   } else if (state is LoginSuccess)  {
                     Navigator.of(context, rootNavigator: true).pop();
                     // NAVIGATE TO HOME SCREEN
-                    NavigationHelper.goOffAll(context, EditProfileScreen());
+                    NavigationHelper.goOffAll(context, ProfileScreen());
                   } else if (state is LoginError) {
                     Navigator.of(context, rootNavigator: true).pop();
 

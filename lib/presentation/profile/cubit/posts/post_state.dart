@@ -14,3 +14,15 @@ final class PostError extends PostState {
 
   PostError({required this.error});
 }
+
+
+final class PostGetLoading extends PostState {}
+final class PostGetSuccess extends PostState {
+  final List<PostModel> posts;
+
+  PostGetSuccess({required this.posts});
+}
+final class PostGetError extends PostState {
+  final String error;
+  PostGetError({required this.error});
+}

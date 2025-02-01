@@ -13,6 +13,7 @@ import 'package:instagram_clone_app/firebase_options.dart';
 import 'package:instagram_clone_app/presentation/auth/cubit/cubit/auth_cubit.dart';
 import 'package:instagram_clone_app/presentation/auth/ui/login_screen.dart';
 import 'package:instagram_clone_app/presentation/edit_profile/cubit/edit_profile_cubit.dart';
+import 'package:instagram_clone_app/presentation/profile/cubit/posts/post_cubit.dart';
 import 'package:instagram_clone_app/presentation/profile/cubit/profile/profile_cubit.dart';
 import 'package:instagram_clone_app/presentation/profile/ui/profile_screen.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -20,7 +21,6 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await CacheHelper.cachIntialization();
-
   await DioHelper.initDioHelper();
   await Supabase.initialize(
     url: 'https://icrbvpqtwskkgenybdyk.supabase.co',
@@ -46,8 +46,11 @@ class MyApp extends StatelessWidget {
         BlocProvider(
           create: (context) => EditProfileCubit(UserRepository(UserService())),
         ),
-           BlocProvider(
-          create: (context) => ProfileCubit(UserRepository(UserService())),
+        BlocProvider(
+          create: (context) => ProfileCubit(UserRepository(UserService()))..fetchUserData(),
+        ),
+         BlocProvider(
+          create: (context) => PostCubit(UserRepository(UserService()))..getPosts(),
         ),
       ],
       child: ScreenUtilInit(
@@ -59,19 +62,17 @@ class MyApp extends StatelessWidget {
           theme: ThemeData(
             useMaterial3: true,
             scaffoldBackgroundColor: scaffoldBackground,
-            colorScheme: ColorScheme.light(
-              primary: iconPrimary
+            colorScheme: ColorScheme.light(primary: iconPrimary),
+            textTheme: const TextTheme(
+              bodyLarge: TextStyle(color: textPrimary),
+              bodyMedium: TextStyle(color: textPrimary),
+              bodySmall: TextStyle(color: textPrimary),
             ),
-                 textTheme: const TextTheme(
-          bodyLarge: TextStyle(color: textPrimary), // Default for large text
-          bodyMedium: TextStyle(color: textPrimary), // Default for medium text
-          bodySmall: TextStyle(color: textPrimary), // Default for small text
-        ),
-        primaryTextTheme: const TextTheme(
-          bodyLarge: TextStyle(color: textPrimary),
-          bodyMedium: TextStyle(color: textPrimary),
-          bodySmall: TextStyle(color: textPrimary),
-        ),
+            primaryTextTheme: const TextTheme(
+              bodyLarge: TextStyle(color: textPrimary),
+              bodyMedium: TextStyle(color: textPrimary),
+              bodySmall: TextStyle(color: textPrimary),
+            ),
           ),
           debugShowCheckedModeBanner: false,
           home: CacheHelper.getData(key: "uId") == null

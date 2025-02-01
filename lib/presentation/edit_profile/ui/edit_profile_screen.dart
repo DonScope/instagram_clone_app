@@ -33,7 +33,7 @@ class EditProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    EditProfileCubit.get(context).fetchUserData();    
+    EditProfileCubit.get(context).fetchUserData();
     return Scaffold(
       body: SafeArea(
         child: Padding(
@@ -46,7 +46,8 @@ class EditProfileScreen extends StatelessWidget {
                 );
               } else if (state is EditProfileSuccess) {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text("Profile updated successfully!")),
+                  const SnackBar(
+                      content: Text("Profile updated successfully!")),
                 );
               }
             },
@@ -80,9 +81,7 @@ class EditProfileScreen extends StatelessWidget {
                       email: _emailController.text,
                       phoneNumber: _phoneController.text,
                     );
-                    EditProfileCubit.get(context).updateUserData( updatedUser).then(
-                          (value) => EditProfileCubit.get(context).fetchUserData(),
-                        );
+                    EditProfileCubit.get(context).updateUserData(updatedUser);
                   },
                 );
               }
@@ -94,4 +93,3 @@ class EditProfileScreen extends StatelessWidget {
     );
   }
 }
-
