@@ -13,9 +13,9 @@ class UserModel {
       this.email,
       this.name,
       this.profilePicUrl,
-      this.bio,
-      this.userName,
-      this.phoneNumber,
+      this.bio = "",
+      this.userName = "",
+      this.phoneNumber = "",
       this.followersCount = 0,
       this.followingCount = 0,
       });
@@ -37,6 +37,7 @@ class UserModel {
       "email": email,
       "userName": userName,
       "phoneNumber": phoneNumber,
+      "profilePicUrl" : profilePicUrl,
       "followersCount" : followersCount,
       "followingCount" : followingCount,
       "bio": bio

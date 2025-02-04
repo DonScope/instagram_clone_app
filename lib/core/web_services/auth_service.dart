@@ -7,7 +7,7 @@ import '../../data/models/user_model.dart';
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-final defaultPfpUrl = 'https://icrbvpqtwskkgenybdyk.supabase.co/storage/v1/object/public/profile-pictures/default_profile.png?t=2025-01-22T00%3A47%3A39.205Z';
+final defaultPfpUrl = 'https://icrbvpqtwskkgenybdyk.supabase.co/storage/v1/object/public/profile-pictures//default_profile.png';
 
   // Register
   Future<User?> registerWithEmailPassword({
@@ -16,13 +16,11 @@ final defaultPfpUrl = 'https://icrbvpqtwskkgenybdyk.supabase.co/storage/v1/objec
     required String displayName,
   }) async {
     try {
-      // Create user with email and password
       UserCredential result = await _auth.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
 
-      // Save user data to Firestore
       await setUser(
         uId: result.user!.uid,
         name: displayName,
@@ -30,7 +28,6 @@ final defaultPfpUrl = 'https://icrbvpqtwskkgenybdyk.supabase.co/storage/v1/objec
         
       );
 
-      // Save user ID to local cache
       CacheHelper.setData(key: "uId", value: result.user!.uid);
       return result.user;
     } on FirebaseAuthException catch (e) {
@@ -53,7 +50,6 @@ final defaultPfpUrl = 'https://icrbvpqtwskkgenybdyk.supabase.co/storage/v1/objec
         password: password,
       );
 
-      // Save user ID to local cache
       CacheHelper.setData(key: "uId", value: result.user!.uid);
 
       return result.user;
@@ -66,7 +62,6 @@ final defaultPfpUrl = 'https://icrbvpqtwskkgenybdyk.supabase.co/storage/v1/objec
     }
   }
 
-  // Save user data to Firestore
   Future<void> setUser({
     required String uId,
     required String name,

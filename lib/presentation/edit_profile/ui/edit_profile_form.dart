@@ -82,6 +82,7 @@ class EditProfileForm extends StatelessWidget {
                           content: Text(usernameExistsError),
                           backgroundColor: error,
                         ),
+
                       );
                       return;
                     }

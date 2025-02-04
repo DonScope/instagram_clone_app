@@ -19,16 +19,13 @@ class UserService {
       final filePath =
           'profile_pictures/$userId/${DateTime.now().millisecondsSinceEpoch}';
 
-      // Attempt to upload the file
       await _client.storage
           .from('profile-pictures')
           .upload(filePath, imageFile)
           .catchError((e) {
-        log('Error in Supabase uploadProfilePicture: $e');
-        throw Exception('Failed to upload profile picture: $e');
+        throw Exception('Error in Supabase uploadProfilePicture: $e');
       });
 
-      // If the response is successful, get the public URL of the uploaded file
       final imageUrl =
           _client.storage.from('profile-pictures').getPublicUrl(filePath);
       await FirebaseFirestore.instance.collection('users').doc(userId).update({
@@ -79,10 +76,11 @@ class UserService {
   Future<String> uploadMediaToSupabase({required File mediaFile}) async {
     try {
       final filePath =
-          'media_${DateTime.now().millisecondsSinceEpoch}_${mediaFile.path}';
-      await _client.storage.from("posts").upload(filePath, mediaFile);
+          '${DateTime.now().millisecondsSinceEpoch}_${mediaFile.path.split('/').last}';
+      await _client.storage.from("media-uploads").upload(filePath, mediaFile);
 
-      final publicUrl = _client.storage.from('posts').getPublicUrl(filePath);
+      final publicUrl =
+          _client.storage.from('media-uploads').getPublicUrl(filePath);
 
       return publicUrl;
     } catch (e) {
@@ -95,7 +93,7 @@ class UserService {
       await _firestore
           .collection('users')
           .doc(uId)
-          .collection('posts')
+          .collection('uploads')
           .doc(Uuid().v4().toString())
           .set(post.toJson());
     } catch (e) {
@@ -105,25 +103,45 @@ class UserService {
 
   Future<List<PostModel>> getPostsFromFireStore() async {
     try {
-      final response = await _firestore
+      QuerySnapshot response = await _firestore
           .collection('users')
           .doc(uId)
-          .collection('posts')
+          .collection('uploads')
+          .orderBy("created_at", descending: false)
           .get();
 
-      // Map each document's data to a PostModel
       final posts = response.docs.map((doc) {
-        return PostModel.fromJson(doc.data());
+        return PostModel.fromJson(doc.data() as Map<String, dynamic>);
       }).toList();
 
-      return posts; // Return the list of posts
+      return posts;
+    } catch (e) {
+      throw Exception("Failed to fetch posts: $e");
+    }
+  }
+
+  Future<List<PostModel>> getReelsFromFireStore() async {
+    try {
+      QuerySnapshot response = await _firestore
+          .collection('users')
+          .doc(uId)
+          .collection('uploads')
+          .where('type', isEqualTo: 'reels')
+          .get();
+
+      final reels = response.docs.map((doc) {
+        return PostModel.fromJson(doc.data() as Map<String, dynamic>);
+      }).toList();
+
+      return reels;
     } catch (e) {
       throw Exception("Failed to fetch posts: $e");
     }
   }
 
   Future<void> likePost(String postId) async {
-    final postRef = FirebaseFirestore.instance.collection('posts').doc(postId);
+    final postRef =
+        FirebaseFirestore.instance.collection('uploads').doc(postId);
 
     await postRef.update({
       'likes_count': FieldValue.increment(1),

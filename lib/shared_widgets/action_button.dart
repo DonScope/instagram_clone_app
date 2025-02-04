@@ -2,57 +2,57 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class ActionButton extends StatelessWidget {
-  final String? text; // Optional text
-  final IconData? icon; // Optional icon
+  final String? text; 
+  final IconData? icon; 
   final VoidCallback onPressed;
-  final double? width; // Optional width
-  final double? height; // Optional height
-  final Color? color; // Optional background color
-  final Color? iconColor; // Optional icon color
+  final double? width; 
+  final double? height; 
+  final Color? color; 
+  final Color? iconColor; 
 
   const ActionButton({
     Key? key,
-    this.text, // Accept text
-    this.icon, // Accept icon
+    this.text, 
+    this.icon, 
     required this.onPressed,
-    this.width, // Accept width
-    this.height, // Accept height
-    this.color, // Accept background color
-    this.iconColor, // Accept icon color
+    this.width, 
+    this.height, 
+    this.color,
+    this.iconColor, 
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: width ?? double.infinity, // Default to full width if null
-      height: height ?? 50.h, // Default height if null
+      width: width ?? double.infinity, 
+      height: height ?? 50.h, 
       child: ElevatedButton(
         onPressed: onPressed,
         style: ElevatedButton.styleFrom(
-          backgroundColor: color ?? const Color(0xFF0099FF), // Default blue if null
+          backgroundColor: color ?? const Color(0xFF0099FF), 
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(8.r),
           ),
-          padding: EdgeInsets.symmetric(vertical: 13.h),
+          padding: EdgeInsets.symmetric(vertical: 3.h),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
-          mainAxisSize: MainAxisSize.min, // Adapt size to content
+          mainAxisSize: MainAxisSize.min, 
           children: [
             if (icon != null) ...[
               Icon(
                 icon,
                 size: 16.sp,
-                color: iconColor ?? Colors.white, // Default icon color
+                color: iconColor ?? Colors.white, 
               ),
-              if (text != null) SizedBox(width: 8.w), // Add spacing if text is present
+              if (text != null) SizedBox(width: 8.w), 
             ],
             if (text != null)
               Center(
                 child: Text(
                   text!,
                   style: TextStyle(
-                    fontSize: 15.sp, // Responsive font size
+                    fontSize: 15.sp, 
                     fontWeight: FontWeight.bold,
                   ),
                 ),

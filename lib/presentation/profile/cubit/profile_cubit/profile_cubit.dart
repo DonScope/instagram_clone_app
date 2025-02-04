@@ -1,4 +1,5 @@
-import 'package:bloc/bloc.dart';
+import 'dart:developer';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:instagram_clone_app/core/helpers/cache_helper.dart';
 import 'package:instagram_clone_app/data/models/user_model.dart';
@@ -19,13 +20,13 @@ class ProfileCubit extends Cubit<ProfileState> {
       emit(ProfileLoading());
       final userData = await _userRepository.fetchUserData(userId);
 
-      // تحقق من وجود البيانات
       if (userData == null) {
         throw Exception("User data not found");
       }
 
 
       emit(ProfileFetchSuccess(userData));
+      log("//////////////////////////////////USER DATA FETCH///////////////////////////");
     } catch (e) {
       emit(ProfileFetchError(e.toString()));
     }

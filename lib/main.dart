@@ -13,8 +13,6 @@ import 'package:instagram_clone_app/firebase_options.dart';
 import 'package:instagram_clone_app/presentation/auth/cubit/cubit/auth_cubit.dart';
 import 'package:instagram_clone_app/presentation/auth/ui/login_screen.dart';
 import 'package:instagram_clone_app/presentation/edit_profile/cubit/edit_profile_cubit.dart';
-import 'package:instagram_clone_app/presentation/profile/cubit/posts/post_cubit.dart';
-import 'package:instagram_clone_app/presentation/profile/cubit/profile/profile_cubit.dart';
 import 'package:instagram_clone_app/presentation/profile/ui/profile_screen.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -46,19 +44,16 @@ class MyApp extends StatelessWidget {
         BlocProvider(
           create: (context) => EditProfileCubit(UserRepository(UserService())),
         ),
-        BlocProvider(
-          create: (context) => ProfileCubit(UserRepository(UserService()))..fetchUserData(),
-        ),
-         BlocProvider(
-          create: (context) => PostCubit(UserRepository(UserService()))..getPosts(),
-        ),
+ 
+     
+
       ],
       child: ScreenUtilInit(
         designSize: const Size(430, 944),
         minTextAdapt: true,
         splitScreenMode: true,
         child: MaterialApp(
-          title: 'Flutter Demo',
+          title: 'Insta',
           theme: ThemeData(
             useMaterial3: true,
             scaffoldBackgroundColor: scaffoldBackground,

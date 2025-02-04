@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 void showCustomBottomSheet(
   BuildContext context,
@@ -15,10 +16,10 @@ void showCustomBottomSheet(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Center(
+             Center(
               child: Text(
                 "Create",
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.bold),
               ),
             ),
             const SizedBox(height: 10),

@@ -20,7 +20,6 @@ class EditProfileCubit extends Cubit<EditProfileState> {
       emit(UserFetchLoading());
       final userData = await _userRepository.fetchUserData(userId);
 
-      // تحقق من وجود البيانات
       if (userData == null) {
         throw Exception("User data not found");
       }
@@ -42,13 +41,14 @@ class EditProfileCubit extends Cubit<EditProfileState> {
     }
   }
 
-  Future<void> updateUserData(UserModel userData) async {
-    try {
-      emit(EditProfileLoading());
-      await _userRepository.updateUserData(userId, userData);
-      emit(EditProfileSuccess());
-    } catch (e) {
-      emit(EditProfileError(e.toString()));
-    }
+Future<void> updateUserData(UserModel userData) async {
+  try {
+    emit(EditProfileLoading());
+    await _userRepository.updateUserData(userId, userData);
+    final updatedUserData = await _userRepository.fetchUserData(userId);
+    emit(UserFetchSuccess(updatedUserData));
+  } catch (e) {
+    emit(EditProfileError(e.toString()));
   }
+}
 }

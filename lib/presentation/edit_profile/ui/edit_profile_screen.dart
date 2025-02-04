@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:instagram_clone_app/presentation/edit_profile/cubit/edit_profile_cubit.dart';
 import 'package:instagram_clone_app/presentation/edit_profile/ui/edit_profile_form.dart';
+import 'package:instagram_clone_app/presentation/profile/cubit/profile_cubit/profile_cubit.dart';
 
 import '../../../data/models/user_model.dart';
 
@@ -52,9 +53,7 @@ class EditProfileScreen extends StatelessWidget {
               }
             },
             builder: (context, state) {
-              if (state is UserFetchLoading) {
-                return const Center(child: CircularProgressIndicator());
-              } else if (state is UserFetchSuccess) {
+              if (state is UserFetchSuccess) {
                 final userData = state.userData;
 
                 _nameController.text = userData.name ?? '';
@@ -82,10 +81,11 @@ class EditProfileScreen extends StatelessWidget {
                       phoneNumber: _phoneController.text,
                     );
                     EditProfileCubit.get(context).updateUserData(updatedUser);
+                    ProfileCubit.get(context).fetchUserData();
                   },
                 );
               }
-              return const Center(child: CircularProgressIndicator());
+              return Center(child: CircularProgressIndicator());
             },
           ),
         ),

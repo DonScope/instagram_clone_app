@@ -3,7 +3,9 @@ import 'dart:developer';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:instagram_clone_app/core/helpers/cache_helper.dart';
+import 'package:instagram_clone_app/core/helpers/navigation_helper.dart';
 import 'package:instagram_clone_app/data/repository/auth/auth_repository.dart';
+import 'package:instagram_clone_app/presentation/auth/ui/login_screen.dart';
 import 'package:meta/meta.dart';
 
 part 'auth_state.dart';
@@ -46,10 +48,12 @@ class AuthCubit extends Cubit<AuthState> {
     }
   }
 
-  Future<void> logOut() async {
+  Future<void> logOut(context) async {
     emit(LogoutLoading());
     try {
-      await _authRepository.logout();
+      await _authRepository.logout().then((value) {
+        NavigationHelper.goOff(context, LoginScreen());
+      },);
       emit(LogoutSuccess());
     } catch (e) {
       emit(LogoutError(e.toString()));

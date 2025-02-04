@@ -1,6 +1,5 @@
 import 'dart:developer';
 
-import 'package:bloc/bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:instagram_clone_app/data/models/post_model.dart';
 import 'package:instagram_clone_app/data/repository/user_services/user_repository.dart';
@@ -12,13 +11,19 @@ class PostCubit extends Cubit<PostState> {
   PostCubit(this._userRepository) : super(PostsInitial());
   final UserRepository _userRepository;
   static PostCubit get(context) => BlocProvider.of(context);
-  Future<void> uploadPost({required dynamic mediaFile, String? caption}) async {
+  int postLength = 0;
+  Future<void> uploadPost(
+      {required dynamic mediaFile,
+      String? caption,
+      required String type}) async {
     try {
-      emit(PostsLoading());
-      await _userRepository.uploadPost(mediaFile: mediaFile, caption: caption);
-      emit(PostSuccess());
+      emit(PostUploadLoading());
+
+      await _userRepository.uploadPost(
+          mediaFile: mediaFile, caption: caption, type: type);
+      emit(PostUploadSuccess());
     } catch (e) {
-      emit(PostError(error: e.toString()));
+      emit(PostUploadError(error: e.toString()));
       throw Exception("Failed to uploadPost in cubit: $e");
     }
   }
@@ -27,11 +32,13 @@ class PostCubit extends Cubit<PostState> {
     try {
       emit(PostGetLoading());
       final posts = await _userRepository.getPosts();
-      log("POST REQUEST");
+      postLength = posts.length;
+      log("Post REQUEST");
 
       emit(PostGetSuccess(posts: posts));
+      log(posts.length.toString());
     } catch (e) {
-      print("Cubit Error: $e"); 
+      print("Cubit Error: $e");
       emit(PostGetError(error: e.toString()));
     }
   }
