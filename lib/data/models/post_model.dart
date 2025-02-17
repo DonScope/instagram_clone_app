@@ -3,19 +3,23 @@ import 'package:intl/intl.dart';
 
 class PostModel {
   final String mediaUrl;
+  final String uId;
+  final String id;
   final String? thumbnailUrl;
   final String? caption;
   final String type;
   final Timestamp createdAt;
-  final int likes;
+  final List<String> liked_by;
   final int comments;
 
   PostModel(
-      {required this.mediaUrl,
+      {required this.id,
+      required this.mediaUrl,
+      required this.uId,
       this.thumbnailUrl,
       this.caption,
       required this.createdAt,
-      this.likes = 0,
+      required this.liked_by,
       this.comments = 0,
       required this.type});
 
@@ -40,10 +44,12 @@ class PostModel {
 
     return PostModel(
       mediaUrl: json['media_url'] ?? '',
+      id: json['id'],
       thumbnailUrl: json['thumbnail_url'],
+      uId: json['uId'],
       caption: json['caption'],
       createdAt: timestamp,
-      likes: json['likes'] ?? 0,
+      liked_by: List<String>.from(json['liked_by'] ?? []),
       comments: json['comments'] ?? 0,
       type: json['type'],
     );
@@ -51,12 +57,14 @@ class PostModel {
 
   Map<String, dynamic> toJson() {
     return {
+      'uId': uId,
+      'id' : id,
       'media_url': mediaUrl,
       if (thumbnailUrl != null && thumbnailUrl!.isNotEmpty)
         'thumbnail_url': thumbnailUrl,
       'caption': caption,
       'created_at': createdAt,
-      'likes': likes,
+      'liked_by': liked_by ?? [],
       'comments': comments,
       'type': type,
     };

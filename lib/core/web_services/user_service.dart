@@ -71,7 +71,7 @@ class UserService {
     }
   }
 
-  // ################################ POSTS SECTION ##########################################
+  // ################################ PROFILE POSTS SECTION ##########################################
 
   Future<String> uploadMediaToSupabase({required File mediaFile}) async {
     try {
@@ -88,14 +88,16 @@ class UserService {
     }
   }
 
-  Future<void> insertPostToFireStore(PostModel post) async {
+  Future<void> insertPostToFireStore(PostModel post, String docId) async {
     try {
       await _firestore
           .collection('users')
           .doc(uId)
           .collection('uploads')
-          .doc(Uuid().v4().toString())
+          .doc(docId)
           .set(post.toJson());
+
+      await _firestore.collection('allUploads').doc(docId).set(post.toJson());
     } catch (e) {
       throw Exception("Database insertion failed: ${e.toString()}");
     }
@@ -139,12 +141,38 @@ class UserService {
     }
   }
 
-  Future<void> likePost(String postId) async {
-    final postRef =
-        FirebaseFirestore.instance.collection('uploads').doc(postId);
+/////////////////////////////////// REEL'S SCREEN SECTION /////////////////////////////////////
 
-    await postRef.update({
-      'likes_count': FieldValue.increment(1),
-    });
+  Future<List<PostModel>> getAllReelsFromFireStore() async {
+    try {
+      QuerySnapshot response = await _firestore
+          .collection('allUploads')
+          .where('type', isEqualTo: 'reels')
+          .get();
+
+      final allReels = response.docs.map((doc) {
+        return PostModel.fromJson(doc.data() as Map<String, dynamic>);
+      }).toList();
+
+      return allReels;
+    } catch (e) {
+      throw Exception("Failed to fetch posts: $e");
+    }
+  }
+
+  Future<void> likePost(String postId) async {
+    final postRef = _firestore.collection("allUploads").doc(postId);
+    final snapshot = await postRef.get();
+     List likedBy = snapshot.data()?['liked_by'] ?? [];
+
+    if (likedBy.contains(uId)) {
+      await postRef.update({
+        'liked_by': FieldValue.arrayRemove([uId]),
+      });
+    } else {
+      await postRef.update({
+        'liked_by': FieldValue.arrayUnion([uId]),
+      });
+    }
   }
 }

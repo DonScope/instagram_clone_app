@@ -84,7 +84,6 @@ class Validators {
     if (value == null || value.isEmpty) {
       return null;
     }
-    // Regex for phone number validation
     final phoneRegex = RegExp(r'^\+[0-9\s-]{11,}$');
     if (!phoneRegex.hasMatch(value)) {
       return 'Enter a valid phone number';

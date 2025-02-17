@@ -34,7 +34,7 @@ class ProfileField extends StatelessWidget {
           ),
           HorizontalSpacer(size: 43.sp),
           SizedBox(
-            width: 279.w,
+            width: 240.w,
             height: 48.h,
             child: CustomProfileFormField(
               controller: controller,

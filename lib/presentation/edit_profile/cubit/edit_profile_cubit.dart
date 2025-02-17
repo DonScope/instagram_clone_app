@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -44,9 +45,11 @@ class EditProfileCubit extends Cubit<EditProfileState> {
 Future<void> updateUserData(UserModel userData) async {
   try {
     emit(EditProfileLoading());
+       log("entered update user data loading");
     await _userRepository.updateUserData(userId, userData);
     final updatedUserData = await _userRepository.fetchUserData(userId);
-    emit(UserFetchSuccess(updatedUserData));
+    emit(EditProfileSuccess(updatedUserData));
+    log("entered update user data");
   } catch (e) {
     emit(EditProfileError(e.toString()));
   }

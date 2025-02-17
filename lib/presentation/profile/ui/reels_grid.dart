@@ -1,7 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:instagram_clone_app/presentation/profile/cubit/reel_cubit/reel_cubit.dart';
+import 'package:instagram_clone_app/presentation/profile/cubit/profile_reel_cubit/profile_reel_cubit.dart';
 import 'package:instagram_clone_app/presentation/profile/widgets/custom_shimmer.dart';
 
 class ReelsGrid extends StatelessWidget {
@@ -9,7 +9,7 @@ class ReelsGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ReelCubit, ReelState>(builder: (context, state) {
+    return BlocBuilder<ProfileReelCubit, ProfileReelState>(builder: (context, state) {
       if (state is ReelsGetLoading || state is ReelsUploadLoading) {
         return CustomShimmer();
       }
@@ -27,7 +27,7 @@ class ReelsGrid extends StatelessWidget {
             itemBuilder: (context, index) {
               return Container(
                   decoration: BoxDecoration(
-                    border: Border.all(color: Colors.black),
+                    border: Border.all(color: Colors.transparent),
                   ),
                   child: Image.network(
                     reels[index].thumbnailUrl ?? reels[index].mediaUrl,

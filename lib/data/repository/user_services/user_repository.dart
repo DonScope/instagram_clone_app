@@ -1,32 +1,23 @@
 import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:get_thumbnail_video/index.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:get_thumbnail_video/video_thumbnail.dart';
+import 'package:instagram_clone_app/core/helpers/cache_helper.dart';
+import 'package:instagram_clone_app/core/helpers/generate_thumbnail_helper.dart';
 import 'package:instagram_clone_app/core/web_services/user_service.dart';
 import 'package:instagram_clone_app/data/models/post_model.dart';
 import 'package:instagram_clone_app/data/models/user_model.dart';
+import 'package:uuid/uuid.dart';
 
 class UserRepository {
   final UserService _userService;
-  List<String> videoExtensions = [
-    ".mp4",
-    ".mov",
-    ".avi",
-    ".mkv",
-    ".flv",
-    ".wmv",
-    ".webm"
-  ];
+
   UserRepository(userService) : _userService = userService;
   Future uploadProfilePicture(String userId, File imageFile) async {
     try {
       return await _userService.uploadProfilePicture(
           userId: userId, imageFile: imageFile);
     } catch (e) {
-      throw Exception("Failed to update profile picture in Firebase: $e");
+      throw Exception("Failed to uploadProfilePicture inside repository: $e");
     }
   }
 
@@ -34,7 +25,7 @@ class UserRepository {
     try {
       return await _userService.fetchUserData(userId);
     } catch (e) {
-      throw Exception("Failed to fetch user data: $e");
+      throw Exception("Failed to fetchUserData inside repository: $e");
     }
   }
 
@@ -42,7 +33,7 @@ class UserRepository {
     try {
       await _userService.updateUserData(userId, userData);
     } catch (e) {
-      throw Exception("Failed to update user data: $e");
+      throw Exception("Failed to updateUserData inside repository: $e");
     }
   }
 
@@ -51,36 +42,29 @@ class UserRepository {
     String? caption,
     required String type,
   }) async {
+    String docId = Uuid().v4().toString();
+
     final mediaUrl =
         await _userService.uploadMediaToSupabase(mediaFile: mediaFile);
-    String? thumbnailUrl;
 
-    if (videoExtensions.any((ext) => mediaFile.path.endsWith(ext))) {
-      final Uint8List? thumbnailData = await VideoThumbnail.thumbnailData(
-        video: mediaFile.path,
-        imageFormat: ImageFormat.JPEG,
-       maxHeight: 256, 
-    quality: 75,  
-      );
+    String? thumbnailUrl = await MediaHelper.generateThumbnail(
+      mediaFile,
+      (thumbnailFile) =>
+          _userService.uploadMediaToSupabase(mediaFile: thumbnailFile),
+    );
 
-      if (thumbnailData != null) {
-        final tempDir = await getTemporaryDirectory();
-        final thumbnailFile = File('${tempDir.path}/thumbnail.jpg');
-        await thumbnailFile.writeAsBytes(thumbnailData);
-
-        thumbnailUrl =
-            await _userService.uploadMediaToSupabase(mediaFile: thumbnailFile);
-      }
-    }
     final post = PostModel(
       mediaUrl: mediaUrl,
       caption: caption,
+      id: docId,
+      uId: CacheHelper.getData(key: "uId"),
       thumbnailUrl: thumbnailUrl,
       createdAt: Timestamp.now(),
       type: type,
+      liked_by: []
     );
 
-    await _userService.insertPostToFireStore(post);
+    await _userService.insertPostToFireStore(post, docId);
   }
 
   Future<List<PostModel>> getPosts() async {
@@ -88,7 +72,7 @@ class UserRepository {
       final response = await _userService.getPostsFromFireStore();
       return response;
     } catch (e) {
-      throw Exception("Failed to fetch posts inside repo: $e");
+      throw Exception("Failed to fetch getPosts inside repository: $e");
     }
   }
 
@@ -97,7 +81,25 @@ class UserRepository {
       final response = await _userService.getReelsFromFireStore();
       return response;
     } catch (e) {
-      throw Exception("Failed to fetch posts inside repo: $e");
+      throw Exception("Failed to fetch getReels inside repository: $e");
+    }
+  }
+
+  Future<List<PostModel>> getAllReels() async {
+    try {
+      final response = await _userService.getAllReelsFromFireStore();
+      return response;
+    } catch (e) {
+      throw Exception("Failed to fetch getAllReels inside repository: $e");
+    }
+  }
+
+  Future<void> likePost(String postId) async {
+    try {
+      final response = await _userService.likePost(postId);
+      return response;
+    } catch (e) {
+      throw Exception("Failed to fetch likePost inside repository: $e");
     }
   }
 }

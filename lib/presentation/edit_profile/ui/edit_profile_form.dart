@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:instagram_clone_app/core/helpers/navigation_helper.dart';
 import 'package:instagram_clone_app/core/utils/validators.dart';
 import 'package:instagram_clone_app/presentation/edit_profile/widgets/ProfileField.dart';
-import 'package:instagram_clone_app/presentation/profile/ui/profile_screen.dart';
 
 import '../../../config/app_colors/app_colors.dart';
 import '../../../shared_widgets/vertical_spacer.dart';
@@ -20,6 +18,7 @@ class EditProfileForm extends StatelessWidget {
   final VoidCallback onPickImage;
   final VoidCallback onUpdate;
   final _formKey = GlobalKey<FormState>();
+
   EditProfileForm({
     required this.nameController,
     required this.usernameController,
@@ -29,7 +28,8 @@ class EditProfileForm extends StatelessWidget {
     required this.profilePictureUrl,
     required this.onPickImage,
     required this.onUpdate,
-    required this.currentEmail, this.currentUsername,
+    required this.currentEmail,
+    this.currentUsername,
   });
 
   @override
@@ -37,12 +37,13 @@ class EditProfileForm extends StatelessWidget {
     return Form(
       key: _formKey,
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               TextButton(
-                onPressed: () => NavigationHelper.goTo(context,ProfileScreen()),
+                onPressed: () => Navigator.pop(context),
                 child: Text(
                   "Cancel",
                   style: TextStyle(color: error, fontSize: 16.sp),
@@ -52,7 +53,7 @@ class EditProfileForm extends StatelessWidget {
                 "Edit Profile",
                 style: TextStyle(
                   color: textPrimary,
-                  fontSize: 16.sp,
+                  fontSize: 18.sp,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -61,29 +62,23 @@ class EditProfileForm extends StatelessWidget {
                   if (_formKey.currentState!.validate()) {
                     final email = emailController.text;
                     final emailExistsError =
-                        await Validators.validateEmailExists(email,
-                            currentUserEmail: currentEmail);
+                        await Validators.validateEmailExists(
+                      email,
+                      currentUserEmail: currentEmail,
+                    );
                     if (emailExistsError != null) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(emailExistsError),
-                          backgroundColor: error,
-                        ),
-                      );
+                      _showSnackBar(context, emailExistsError);
                       return;
                     }
+
                     final username = usernameController.text;
                     final usernameExistsError =
-                        await Validators.validateUsernameExists(username,
-                            currentUsername: currentUsername);
-                             if (usernameExistsError != null) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(usernameExistsError),
-                          backgroundColor: error,
-                        ),
-
-                      );
+                        await Validators.validateUsernameExists(
+                      username,
+                      currentUsername: currentUsername,
+                    );
+                    if (usernameExistsError != null) {
+                      _showSnackBar(context, usernameExistsError);
                       return;
                     }
                     onUpdate();
@@ -96,21 +91,25 @@ class EditProfileForm extends StatelessWidget {
               ),
             ],
           ),
-          const VerticalSpacer(size: 15),
-          CircleAvatar(
-            radius: 50,
-            backgroundColor: Colors.grey,
-            backgroundImage: profilePictureUrl != null
-                ? NetworkImage(profilePictureUrl!)
-                : const AssetImage('assets/default_profile.png')
-                    as ImageProvider,
+          VerticalSpacer(size: 15.h),
+          Center(
+            child: CircleAvatar(
+              radius: 50.r,
+              backgroundColor: Colors.grey,
+              backgroundImage: profilePictureUrl != null
+                  ? NetworkImage(profilePictureUrl!)
+                  : const AssetImage('assets/default_profile.png')
+                      as ImageProvider,
+            ),
           ),
-          const VerticalSpacer(size: 10),
-          TextButton(
-            onPressed: onPickImage,
-            child: const Text(
-              "Change Profile Photo",
-              style: TextStyle(color: Colors.blue),
+          VerticalSpacer(size: 10.h),
+          Center(
+            child: TextButton(
+              onPressed: onPickImage,
+              child: Text(
+                "Change Profile Photo",
+                style: TextStyle(color: Colors.blue, fontSize: 14.sp),
+              ),
             ),
           ),
           ProfileField(
@@ -126,9 +125,9 @@ class EditProfileForm extends StatelessWidget {
             label: "Bio",
             controller: bioController,
           ),
-          const VerticalSpacer(size: 15),
-          Divider(color: divider),
-          const VerticalSpacer(size: 15),
+          VerticalSpacer(size: 15.h),
+          Divider(color: divider, thickness: 1.h),
+          VerticalSpacer(size: 15.h),
           Align(
             alignment: Alignment.centerLeft,
             child: SizedBox(
@@ -142,16 +141,13 @@ class EditProfileForm extends StatelessWidget {
               ),
             ),
           ),
-          const VerticalSpacer(size: 20),
-          Align(
-            alignment: Alignment.centerLeft,
-            child: Text(
-              "Private Information",
-              style: TextStyle(
-                color: textPrimary,
-                fontSize: 16.sp,
-                fontWeight: FontWeight.bold,
-              ),
+          VerticalSpacer(size: 20.h),
+          Text(
+            "Private Information",
+            style: TextStyle(
+              color: textPrimary,
+              fontSize: 16.sp,
+              fontWeight: FontWeight.bold,
             ),
           ),
           ProfileField(
@@ -161,10 +157,19 @@ class EditProfileForm extends StatelessWidget {
           ),
           ProfileField(
             label: "Phone",
-            validator: Validators.validatePhoneNumber,
             controller: phoneController,
+            validator: Validators.validatePhoneNumber,
           ),
         ],
+      ),
+    );
+  }
+
+  void _showSnackBar(BuildContext context, String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message, style: TextStyle(fontSize: 14.sp)),
+        backgroundColor: error,
       ),
     );
   }

@@ -3,12 +3,12 @@ import 'package:instagram_clone_app/data/models/post_model.dart';
 import 'package:instagram_clone_app/data/repository/user_services/user_repository.dart';
 import 'package:meta/meta.dart';
 
-part 'reel_state.dart';
+part 'profile_reel_state.dart';
 
-class ReelCubit extends Cubit<ReelState> {
-  ReelCubit(this._userRepository) : super(ReelInitial());
+class ProfileReelCubit extends Cubit<ProfileReelState> {
+  ProfileReelCubit(this._userRepository) : super(ReelInitial());
   final UserRepository _userRepository;
-  static ReelCubit get(context) => BlocProvider.of(context);
+  static ProfileReelCubit get(context) => BlocProvider.of(context);
   Future<void> getReels() async {
     try {
       emit(ReelsGetLoading());
