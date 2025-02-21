@@ -1,4 +1,5 @@
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -37,26 +38,30 @@ class LoginScreen extends StatelessWidget {
                   child: Image.asset("assets/instagram_logo_text_black.png")),
               const VerticalSpacer(size: 20),
               CustomTextField(
-                labelText: "Email",
+                labelText: "email".tr(),
                 controller: _emailController,
                 validator: Validators.validateEmail,
               ),
               const VerticalSpacer(
                 size: 20,
               ),
-              CustomTextField(
-                labelText: "Password",
-                controller: _passwordController,
-                obscureText: _obscureTextNotifier.value,
-                validator: Validators.validatePassword,
-                ic: IconButton(
-                    onPressed: () {
-                      _obscureTextNotifier.value = !_obscureTextNotifier.value;
-                    },
-                    icon: Icon(_obscureTextNotifier.value
-                        ? Icons.visibility_off
-                        : Icons.visibility)),
-              ),
+              ValueListenableBuilder(
+                    valueListenable: _obscureTextNotifier,
+                    builder: (context, value, child) {
+                return CustomTextField(
+                  labelText: "password".tr(),
+                  controller: _passwordController,
+                  obscureText: _obscureTextNotifier.value,
+                  validator: Validators.validatePassword,
+                  ic: IconButton(
+                      onPressed: () {
+                        _obscureTextNotifier.value = !_obscureTextNotifier.value;
+                      },
+                      icon: Icon(_obscureTextNotifier.value
+                          ? Icons.visibility_off
+                          : Icons.visibility)),
+                );
+     }   ),
               const VerticalSpacer(
                 size: 20,
               ),
@@ -81,7 +86,7 @@ class LoginScreen extends StatelessWidget {
                       context: context,
                       builder: (context) {
                         return AlertDialog(
-                          title: const Text('Login failed'),
+                          title: const Text('login_failed').tr(),
                           content: Text(state.error),
                           actions: [
                             TextButton(
@@ -100,7 +105,7 @@ class LoginScreen extends StatelessWidget {
                 builder: (context, state) {
                   var cubit = AuthCubit.get(context);
                   return CustomButton(
-                      text: "Login",
+                      text: "log_in".tr(),
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {
                           cubit.signInEmailPassword(
@@ -113,13 +118,13 @@ class LoginScreen extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Text("Don't have an account?"),
+                   Text("dont_have_account".tr()),
                   TextButton(
                     onPressed: () {
                       NavigationHelper.goTo(context, const RegisterScreen());
                     },
-                    child: const Text(
-                      "Register",
+                    child:  Text(
+                      "register".tr(),
                       style: TextStyle(
                           color: textPrimary, fontWeight: FontWeight.bold),
                     ),

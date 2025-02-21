@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class VerticalSpacer extends StatelessWidget {
   final double size;
@@ -7,6 +8,6 @@ class VerticalSpacer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(height: size);
+    return SizedBox(height: size.h);
   }
 }

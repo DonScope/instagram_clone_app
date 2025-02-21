@@ -1,4 +1,6 @@
 
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:instagram_clone_app/core/helpers/cache_helper.dart';
@@ -88,7 +90,8 @@ final defaultPfpUrl = 'https://icrbvpqtwskkgenybdyk.supabase.co/storage/v1/objec
   Future<void> logout() async {
     try {
       await _auth.signOut();
-      CacheHelper.deleteData(key: "uId");
+      await CacheHelper.deleteData(key: "uId");
+
     } catch (e) {
       print('Error during logout: $e');
       rethrow;

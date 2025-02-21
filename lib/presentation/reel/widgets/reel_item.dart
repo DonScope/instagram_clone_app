@@ -25,7 +25,7 @@ class ReelItem extends StatefulWidget {
 }
 
 class _ReelItemState extends State<ReelItem> {
- final uId = CacheHelper.getData(key: "uId");
+  final uId = CacheHelper.getData(key: "uId");
   void toggleLike() {
     final isLiked = widget.reelModel.liked_by.contains(uId);
 
@@ -119,18 +119,15 @@ class _ReelItemState extends State<ReelItem> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                 Column(
+                Column(
                   children: [
                     GestureDetector(
                       onTap: () {
                         setState(() {
-                       toggleLike();
-
+                          toggleLike();
                         });
-
                       },
-                      child: widget.reelModel.liked_by
-                              .contains(uId)
+                      child: widget.reelModel.liked_by.contains(uId)
                           ? Image.asset("assets/icons/liked_red.png")
                           : Image.asset("assets/icons/like_outline_white.png"),
                     ),

@@ -51,9 +51,12 @@ class AuthCubit extends Cubit<AuthState> {
   Future<void> logOut(context) async {
     emit(LogoutLoading());
     try {
-      await _authRepository.logout().then((value) {
-        NavigationHelper.goOff(context, LoginScreen());
-      },);
+      await _authRepository.logout().then(
+        (value) {
+          NavigationHelper.goOffAll(context, LoginScreen());
+        },
+      );
+
       emit(LogoutSuccess());
     } catch (e) {
       emit(LogoutError(e.toString()));

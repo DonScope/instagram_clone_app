@@ -69,4 +69,28 @@ class PostModel {
       'type': type,
     };
   }
+
+  PostModel copyWith({
+  String? id,
+  String? mediaUrl,
+  String? uId,
+  String? thumbnailUrl,
+  String? caption,
+  String? type,
+  Timestamp? createdAt,
+  List<String>? liked_by,
+  int? comments,
+}) {
+  return PostModel(
+    id: id ?? this.id,
+    mediaUrl: mediaUrl ?? this.mediaUrl,
+    uId: uId ?? this.uId,
+    thumbnailUrl: thumbnailUrl ?? this.thumbnailUrl,
+    caption: caption ?? this.caption,
+    type: type ?? this.type,
+    createdAt: createdAt ?? this.createdAt,
+    liked_by: liked_by ?? this.liked_by,
+    comments: comments ?? this.comments,
+  );
+}
 }

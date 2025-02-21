@@ -1,3 +1,5 @@
+
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -67,59 +69,85 @@ class ProfileScreen extends StatelessWidget {
                               children: [
                                 IconButton(
                                   onPressed: () {
-                                    showCustomBottomSheet(context, [
-                                      ListTile(
-                                        leading: Icon(
-                                          Icons.video_camera_back_rounded,
-                                        ),
-                                        onTap: () => ImagePickerHelper()
-                                            .pickAndUploadImage(
-                                                context, "reels")
-                                            .then(
-                                          (value) {
-                                            reelCubit.getReels();
-                                            postCubit.getPosts();
-                                          },
-                                        ),
-                                        title: Text('Reel'),
-                                      ),
-                                      ListTile(
-                                        leading: Icon(
-                                          Icons.grid_on_sharp,
-                                        ),
-                                        title: Text('Post'),
-                                        onTap: () => ImagePickerHelper()
-                                            .pickAndUploadImage(context, "post")
-                                            .then(
-                                          (value) {
-                                            postCubit.getPosts();
-                                          },
-                                        ),
-                                      ),
-                                      ListTile(
-                                        leading: Icon(
-                                          Icons.add_box_outlined,
-                                        ),
-                                        title: Text('Story'),
-                                        onTap: () async {},
-                                      ),
-                                    ]);
+                                    showCustomBottomSheet(
+                                        context,
+                                        [
+                                          ListTile(
+                                            leading: Icon(
+                                              Icons.video_camera_back_outlined,
+                                            ),
+                                            onTap: () => ImagePickerHelper()
+                                                .pickAndUploadImage(
+                                                    context, "reels")
+                                                .then(
+                                              (value) {
+                                                reelCubit.getReels();
+                                                postCubit.getPosts();
+                                              },
+                                            ),
+                                            title: Text('reel'.tr()),
+                                          ),
+                                          ListTile(
+                                            leading: Icon(
+                                              Icons.grid_on_sharp,
+                                            ),
+                                            title: Text('post'.tr()),
+                                            onTap: () => ImagePickerHelper()
+                                                .pickAndUploadImage(
+                                                    context, "post")
+                                                .then(
+                                              (value) {
+                                                postCubit.getPosts();
+                                              },
+                                            ),
+                                          ),
+                                          ListTile(
+                                              leading: Icon(
+                                                Icons.add_to_photos_outlined,
+                                              ),
+                                              title: Text('story'.tr()),
+                                              onTap: () => ImagePickerHelper()
+                                                  .pickAndUploadStory(context)),
+                                        ],
+                                        "create".tr());
                                   },
                                   icon: const Icon(Icons.add_box_outlined),
                                 ),
                                 IconButton(
                                   onPressed: () {
-                                    showCustomBottomSheet(context, [
-                                      ListTile(
-                                        leading: Icon(Icons.logout),
-                                        title: Text(
-                                          'Logout',
-                                          style: TextStyle(color: error),
-                                        ),
-                                        onTap: () => AuthCubit.get(context)
-                                            .logOut(context),
-                                      )
-                                    ]);
+                                    showCustomBottomSheet(
+                                        context,
+                                        [
+                                          ListTile(
+                                            leading: Icon(Icons.logout),
+                                            title: Text(
+                                              'log_out'.tr(),
+                                              style: TextStyle(color: error),
+                                            ),
+                                            onTap: () =>  AuthCubit.get(context)
+                                                  .logOut(context)
+                                          ),
+                                          ListTile(
+                                            leading: Icon(Icons.language),
+                                            title: Text(
+                                              'change_lang'.tr(),
+                                              style:
+                                                  TextStyle(color: textPrimary),
+                                            ),
+                                            onTap: () {
+                                              EasyLocalization.of(context)!
+                                                          .currentLocale ==
+                                                      Locale("en")
+                                                  ? EasyLocalization.of(
+                                                          context)!
+                                                      .setLocale(Locale("ar"))
+                                                  : EasyLocalization.of(
+                                                          context)!
+                                                      .setLocale(Locale("en"));
+                                            },
+                                          )
+                                        ],
+                                        "actions".tr());
                                   },
                                   icon: const Icon(Icons.menu),
                                 ),
@@ -150,7 +178,7 @@ class ProfileScreen extends StatelessWidget {
                                         fontWeight: FontWeight.bold,
                                       ),
                                     ),
-                                    Text("Posts"),
+                                    Text("posts".tr()),
                                   ],
                                 ),
                                 HorizontalSpacer(),
@@ -164,7 +192,7 @@ class ProfileScreen extends StatelessWidget {
                                         fontWeight: FontWeight.bold,
                                       ),
                                     ),
-                                    Text("Followers")
+                                    Text("followers".tr())
                                   ],
                                 ),
                                 HorizontalSpacer(),
@@ -178,7 +206,7 @@ class ProfileScreen extends StatelessWidget {
                                         fontWeight: FontWeight.bold,
                                       ),
                                     ),
-                                    Text("Following")
+                                    Text("following".tr())
                                   ],
                                 ),
                               ],
@@ -190,7 +218,7 @@ class ProfileScreen extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              "${data.userName ?? "No username yet."}",
+                              "${data.userName ?? ""}",
                               style: TextStyle(
                                 color: textPrimary,
                                 fontSize: 16.sp,
@@ -198,7 +226,7 @@ class ProfileScreen extends StatelessWidget {
                               ),
                             ),
                             Text(
-                              "${data.bio!.isEmpty ? "Empty bio" : data.bio}",
+                              "${data.bio!.isEmpty ? "" : data.bio}",
                               style: TextStyle(
                                 color: textPrimary,
                                 fontSize: 13.sp,
@@ -209,37 +237,37 @@ class ProfileScreen extends StatelessWidget {
                         VerticalSpacer(),
                         Row(
                           children: [
-                            Container(
-                              width: 100.w,
-                              height: 40.h,
-                              child: Stack(
-                                children: List.generate(3, (index) {
-                                  return Positioned(
-                                    left: index * 20.0.w,
-                                    child: CircleAvatar(
-                                      radius: 20.r,
-                                      backgroundImage: NetworkImage(
-                                          data.profilePicUrl.toString()),
-                                      backgroundColor: Colors.grey[200],
-                                    ),
-                                  );
-                                }),
-                              ),
-                            ),
-                            SizedBox(
-                                width: 250.w,
-                                child: Text(
-                                  "Followed by username, username and 100 others",
-                                  overflow: TextOverflow.ellipsis,
-                                  maxLines: 2,
-                                ))
+                            // Container(
+                            //   width: 100.w,
+                            //   height: 40.h,
+                            //   child: Stack(
+                            //     children: List.generate(3, (index) {
+                            //       return Positioned(
+                            //         left: index * 20.0.w,
+                            //         child: CircleAvatar(
+                            //           radius: 20.r,
+                            //           backgroundImage: NetworkImage(
+                            //               data.profilePicUrl.toString()),
+                            //           backgroundColor: Colors.grey[200],
+                            //         ),
+                            //       );
+                            //     }),
+                            //   ),
+                            // ),
+                            // SizedBox(
+                            //     width: 250.w,
+                            //     child: Text(
+                            //       "Followed by username, username and 100 others",
+                            //       overflow: TextOverflow.ellipsis,
+                            //       maxLines: 2,
+                            //     ))
                           ],
                         ),
                         VerticalSpacer(),
                         Row(
                           children: [
                             ActionButton(
-                              text: "Edit profile",
+                              text: "edit_profile".tr(),
                               width: 340.w,
                               height: 45.h,
                               color: textDisabled,
@@ -291,7 +319,7 @@ class ProfileScreen extends StatelessWidget {
         } else if (state is ProfileFetchError) {
           return Center(
             child: Text(
-              "Error occured, please try again later.",
+              "screen_error".tr(),
               style: TextStyle(color: error),
             ),
           );

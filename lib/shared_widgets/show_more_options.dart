@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 void showCustomBottomSheet(
   BuildContext context,
   List<Widget> options,
+  String title,
 ) {
   showModalBottomSheet(
     context: context,
@@ -18,7 +19,7 @@ void showCustomBottomSheet(
           children: [
              Center(
               child: Text(
-                "Create",
+                "$title",
                 style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.bold),
               ),
             ),

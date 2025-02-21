@@ -8,17 +8,19 @@ class UserModel {
   int? followingCount;
   String? profilePicUrl;
   String? bio;
-  UserModel(
-      {this.uId,
-      this.email,
-      this.name,
-      this.profilePicUrl,
-      this.bio = "",
-      this.userName = "",
-      this.phoneNumber = "",
-      this.followersCount = 0,
-      this.followingCount = 0,
-      });
+
+  UserModel({
+    this.uId,
+    this.email,
+    this.name,
+    this.profilePicUrl,
+    this.bio = "",
+    this.userName = "",
+    this.phoneNumber = "",
+    this.followersCount = 0,
+    this.followingCount = 0,
+  });
+
   UserModel.fromJson(Map<String, dynamic> json) {
     uId = json["uId"];
     name = json["name"];
@@ -30,6 +32,7 @@ class UserModel {
     followingCount = json["followingCount"];
     bio = json["bio"];
   }
+
   Map<String, dynamic> toJson() {
     return {
       "uId": uId,
@@ -37,10 +40,10 @@ class UserModel {
       "email": email,
       "userName": userName,
       "phoneNumber": phoneNumber,
-      "profilePicUrl" : profilePicUrl,
-      "followersCount" : followersCount,
-      "followingCount" : followingCount,
-      "bio": bio
+      "profilePicUrl": profilePicUrl,
+      "followersCount": followersCount,
+      "followingCount": followingCount,
+      "bio": bio,
     };
   }
 
@@ -50,7 +53,16 @@ class UserModel {
       "email": email,
       "userName": userName,
       "phoneNumber": phoneNumber,
-      "bio": bio
+      "bio": bio,
     };
   }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    return other is UserModel && other.uId == uId;
+  }
+
+  @override
+  int get hashCode => uId?.hashCode ?? 0;
 }

@@ -19,6 +19,7 @@ class PostsGrid extends StatelessWidget {
           final posts = state.posts;
 
           return GridView.builder(
+                  physics: NeverScrollableScrollPhysics( ),
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 3,
                 crossAxisSpacing: 4,

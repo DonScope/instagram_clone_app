@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class Validators {
   // Validate email
@@ -11,7 +12,7 @@ class Validators {
     // Regex for email validation
     final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
     if (!emailRegex.hasMatch(value)) {
-      return 'Enter a valid email address';
+      return 'email_valid_error'.tr();
     }
     return null; // No error
   }
@@ -31,7 +32,7 @@ class Validators {
         .get();
 
     if (querySnapshot.docs.isNotEmpty) {
-      return 'Email already exists';
+      return 'email_valid_error2'.tr();
     }
 
     return null; // No error
@@ -40,10 +41,10 @@ class Validators {
   // Validate password
   static String? validatePassword(String? value) {
     if (value == null || value.isEmpty) {
-      return 'Password is required';
+      return 'password_valid_error'.tr();
     }
     if (value.length < 8) {
-      return 'Password must be at least 8 characters long';
+      return 'password_valid_error2'.tr();
     }
     return null; // No error
   }
@@ -51,10 +52,10 @@ class Validators {
   // Validate username
   static String? validateUsername(String? value) {
     if (value == null || value.isEmpty) {
-      return 'Username is required';
+      return 'username_valid_error'.tr();
     }
     if (value.length < 3) {
-      return 'Username must be at least 3 characters long';
+      return 'username_valid_error2'.tr();
     }
     return null; // No error
   }
@@ -73,7 +74,7 @@ class Validators {
         .get();
 
     if (querySnapshot.docs.isNotEmpty) {
-      return 'Username already exists';
+      return 'username_valid_error3'.tr();
     }
     log(querySnapshot.docs.toString());
     return null; // No error
@@ -86,7 +87,7 @@ class Validators {
     }
     final phoneRegex = RegExp(r'^\+[0-9\s-]{11,}$');
     if (!phoneRegex.hasMatch(value)) {
-      return 'Enter a valid phone number';
+      return 'phone_valid_error'.tr();
     }
     return null; // No error
   }

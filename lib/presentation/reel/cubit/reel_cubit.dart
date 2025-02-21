@@ -2,7 +2,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:instagram_clone_app/data/models/user_model.dart';
 import 'package:instagram_clone_app/data/repository/user_services/user_repository.dart';
 import 'package:video_player/video_player.dart';
-
 import 'reel_state.dart';
 
 class ReelCubit extends Cubit<ReelState> {
@@ -24,7 +23,7 @@ class ReelCubit extends Cubit<ReelState> {
           if (userData != null) {
             userDataList.add(userData);
           } else {
-           print("No existing user");
+            print("No existing user");
           }
 
           controllers.add(VideoPlayerController.networkUrl(
@@ -51,11 +50,10 @@ class ReelCubit extends Cubit<ReelState> {
     }
   }
 
-
-  Future<void> likeReel(String postId)async{
-    try{
+  Future<void> likeReel(String postId) async {
+    try {
       await _userRepository.likePost(postId);
-    }catch(e){
+    } catch (e) {
       throw Exception("Error inside likeReel Cubit");
     }
   }

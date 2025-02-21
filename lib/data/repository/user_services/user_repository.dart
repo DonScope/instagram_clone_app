@@ -5,6 +5,7 @@ import 'package:instagram_clone_app/core/helpers/cache_helper.dart';
 import 'package:instagram_clone_app/core/helpers/generate_thumbnail_helper.dart';
 import 'package:instagram_clone_app/core/web_services/user_service.dart';
 import 'package:instagram_clone_app/data/models/post_model.dart';
+import 'package:instagram_clone_app/data/models/story_model.dart';
 import 'package:instagram_clone_app/data/models/user_model.dart';
 import 'package:uuid/uuid.dart';
 
@@ -54,17 +55,46 @@ class UserRepository {
     );
 
     final post = PostModel(
-      mediaUrl: mediaUrl,
-      caption: caption,
-      id: docId,
-      uId: CacheHelper.getData(key: "uId"),
-      thumbnailUrl: thumbnailUrl,
-      createdAt: Timestamp.now(),
-      type: type,
-      liked_by: []
-    );
+        mediaUrl: mediaUrl,
+        caption: caption,
+        id: docId,
+        uId: CacheHelper.getData(key: "uId"),
+        thumbnailUrl: thumbnailUrl,
+        createdAt: Timestamp.now(),
+        type: type,
+        liked_by: []);
 
     await _userService.insertPostToFireStore(post, docId);
+  }
+
+  Future<void> storyUpload({
+    required File mediaFile,
+    String? caption,
+    required bool isVideo,
+  }) async {
+    String docId = Uuid().v4().toString();
+    final mediaUrl = await _userService.uploadStory(mediaFile: mediaFile);
+    final story = StoryModel(
+      id: docId,
+      uId: CacheHelper.getData(key: "uId"),
+      isVideo: isVideo,
+      caption: caption,
+      createdAt: DateTime.now(),
+      expiresAt: DateTime.now().add(Duration(hours: 24)),
+      mediaUrl: mediaUrl,
+    );
+
+    await _userService.insertStory(story, docId);
+  }
+
+  Future<List<StoryModel>> getAllStories() async {
+    try {
+      final allStories = await _userService.getAllStories();
+
+      return allStories;
+    } catch (e) {
+      throw Exception("Error getAllStories inside user repo. $e");
+    }
   }
 
   Future<List<PostModel>> getPosts() async {
@@ -91,6 +121,15 @@ class UserRepository {
       return response;
     } catch (e) {
       throw Exception("Failed to fetch getAllReels inside repository: $e");
+    }
+  }
+
+  Future<List<PostModel>> getAllPosts() async {
+    try {
+      final response = await _userService.getAllPostsFromFireStore();
+      return response;
+    } catch (e) {
+      throw Exception("Failed to fetch getAllPosts inside repository: $e");
     }
   }
 

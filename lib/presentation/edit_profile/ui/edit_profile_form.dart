@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:instagram_clone_app/core/utils/validators.dart';
@@ -36,131 +37,133 @@ class EditProfileForm extends StatelessWidget {
   Widget build(BuildContext context) {
     return Form(
       key: _formKey,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: Text(
-                  "Cancel",
-                  style: TextStyle(color: error, fontSize: 16.sp),
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: Text(
+                    "cancel".tr(),
+                    style: TextStyle(color: error, fontSize: 16.sp),
+                  ),
                 ),
-              ),
-              Text(
-                "Edit Profile",
-                style: TextStyle(
-                  color: textPrimary,
-                  fontSize: 18.sp,
-                  fontWeight: FontWeight.bold,
+                Text(
+                  "edit_profile".tr(),
+                  style: TextStyle(
+                    color: textPrimary,
+                    fontSize: 18.sp,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
-              ),
-              TextButton(
-                onPressed: () async {
-                  if (_formKey.currentState!.validate()) {
-                    final email = emailController.text;
-                    final emailExistsError =
-                        await Validators.validateEmailExists(
-                      email,
-                      currentUserEmail: currentEmail,
-                    );
-                    if (emailExistsError != null) {
-                      _showSnackBar(context, emailExistsError);
-                      return;
+                TextButton(
+                  onPressed: () async {
+                    if (_formKey.currentState!.validate()) {
+                      final email = emailController.text;
+                      final emailExistsError =
+                          await Validators.validateEmailExists(
+                        email,
+                        currentUserEmail: currentEmail,
+                      );
+                      if (emailExistsError != null) {
+                        _showSnackBar(context, emailExistsError);
+                        return;
+                      }
+        
+                      final username = usernameController.text;
+                      final usernameExistsError =
+                          await Validators.validateUsernameExists(
+                        username,
+                        currentUsername: currentUsername,
+                      );
+                      if (usernameExistsError != null) {
+                        _showSnackBar(context, usernameExistsError);
+                        return;
+                      }
+                      onUpdate();
                     }
-
-                    final username = usernameController.text;
-                    final usernameExistsError =
-                        await Validators.validateUsernameExists(
-                      username,
-                      currentUsername: currentUsername,
-                    );
-                    if (usernameExistsError != null) {
-                      _showSnackBar(context, usernameExistsError);
-                      return;
-                    }
-                    onUpdate();
-                  }
-                },
-                child: Text(
-                  "Done",
-                  style: TextStyle(color: buttonPrimary, fontSize: 16.sp),
+                  },
+                  child: Text(
+                    "save".tr(),
+                    style: TextStyle(color: buttonPrimary, fontSize: 16.sp),
+                  ),
                 ),
-              ),
-            ],
-          ),
-          VerticalSpacer(size: 15.h),
-          Center(
-            child: CircleAvatar(
-              radius: 50.r,
-              backgroundColor: Colors.grey,
-              backgroundImage: profilePictureUrl != null
-                  ? NetworkImage(profilePictureUrl!)
-                  : const AssetImage('assets/default_profile.png')
-                      as ImageProvider,
+              ],
             ),
-          ),
-          VerticalSpacer(size: 10.h),
-          Center(
-            child: TextButton(
-              onPressed: onPickImage,
-              child: Text(
-                "Change Profile Photo",
-                style: TextStyle(color: Colors.blue, fontSize: 14.sp),
+            VerticalSpacer(size: 15.h),
+            Center(
+              child: CircleAvatar(
+                radius: 50.r,
+                backgroundColor: Colors.grey,
+                backgroundImage: profilePictureUrl != null
+                    ? NetworkImage(profilePictureUrl!)
+                    : const AssetImage('assets/default_profile.png')
+                        as ImageProvider,
               ),
             ),
-          ),
-          ProfileField(
-            label: "Name",
-            controller: nameController,
-          ),
-          ProfileField(
-            label: "Username",
-            controller: usernameController,
-            validator: Validators.validateUsername,
-          ),
-          ProfileField(
-            label: "Bio",
-            controller: bioController,
-          ),
-          VerticalSpacer(size: 15.h),
-          Divider(color: divider, thickness: 1.h),
-          VerticalSpacer(size: 15.h),
-          Align(
-            alignment: Alignment.centerLeft,
-            child: SizedBox(
-              width: 260.w,
-              child: InkWell(
-                onTap: () {},
+            VerticalSpacer(size: 10.h),
+            Center(
+              child: TextButton(
+                onPressed: onPickImage,
                 child: Text(
-                  "Switch to Professional Account",
-                  style: TextStyle(color: buttonPrimary, fontSize: 16.sp),
+                  "change_pfp".tr(),
+                  style: TextStyle(color: Colors.blue, fontSize: 14.sp),
                 ),
               ),
             ),
-          ),
-          VerticalSpacer(size: 20.h),
-          Text(
-            "Private Information",
-            style: TextStyle(
-              color: textPrimary,
-              fontSize: 16.sp,
-              fontWeight: FontWeight.bold,
+            ProfileField(
+              label: "Name".tr(),
+              controller: nameController,
             ),
-          ),
-          ProfileField(
-            label: "Email",
-            controller: emailController,
-            validator: Validators.validateEmail,
-          ),
-          ProfileField(
-            label: "Phone",
-            controller: phoneController,
-            validator: Validators.validatePhoneNumber,
-          ),
-        ],
+            ProfileField(
+              label: "username".tr(),
+              controller: usernameController,
+              validator: Validators.validateUsername,
+            ),
+            ProfileField(
+              label: "Bio",
+              controller: bioController,
+            ),
+            VerticalSpacer(size: 15.h),
+            Divider(color: divider, thickness: 1.h),
+            VerticalSpacer(size: 15.h),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: SizedBox(
+                width: 260.w,
+                child: InkWell(
+                  onTap: () {},
+                  child: Text(
+                    "switch_to_prof".tr(),
+                    style: TextStyle(color: buttonPrimary, fontSize: 16.sp),
+                  ),
+                ),
+              ),
+            ),
+            VerticalSpacer(size: 20.h),
+            Text(
+              "private_info".tr(),
+              style: TextStyle(
+                color: textPrimary,
+                fontSize: 16.sp,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            ProfileField(
+              label: "email".tr(),
+              controller: emailController,
+              validator: Validators.validateEmail,
+            ),
+            ProfileField(
+              label: "phone".tr(),
+              controller: phoneController,
+              validator: Validators.validatePhoneNumber,
+            ),
+          ],
+        ),
       ),
     );
   }

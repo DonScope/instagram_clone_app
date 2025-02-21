@@ -4,9 +4,9 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:instagram_clone_app/core/helpers/cache_helper.dart';
 import 'package:instagram_clone_app/data/models/post_model.dart';
+import 'package:instagram_clone_app/data/models/story_model.dart';
 import 'package:instagram_clone_app/data/models/user_model.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:uuid/uuid.dart';
 
 class UserService {
   final SupabaseClient _client = Supabase.instance.client;
@@ -163,7 +163,7 @@ class UserService {
   Future<void> likePost(String postId) async {
     final postRef = _firestore.collection("allUploads").doc(postId);
     final snapshot = await postRef.get();
-     List likedBy = snapshot.data()?['liked_by'] ?? [];
+    List likedBy = snapshot.data()?['liked_by'] ?? [];
 
     if (likedBy.contains(uId)) {
       await postRef.update({
@@ -175,4 +175,86 @@ class UserService {
       });
     }
   }
+/////////////////////////////////// STORY SECTION /////////////////////////////////////
+
+
+ Future<String> uploadStory({required File mediaFile}) async {
+    try {
+      final filePath =
+          '${DateTime.now().millisecondsSinceEpoch}_${mediaFile.path.split('/').last}';
+      await _client.storage.from("story-uploads").upload(filePath, mediaFile);
+
+      final publicUrl =
+          _client.storage.from('story-uploads').getPublicUrl(filePath);
+
+      return publicUrl;
+    } catch (e) {
+      throw Exception("Story upload failed: ${e.toString()}");
+    }
+  }
+
+
+  Future<void> insertStory(StoryModel story, String docId) async {
+    try {
+      await _firestore
+          .collection('users')
+          .doc(uId)
+          .collection('uploads')
+          .doc(docId)
+          .set(story.toJson());
+
+      await _firestore.collection('storyUploads').doc(docId).set(story.toJson());
+    } catch (e) {
+      throw Exception("Database insertion failed: ${e.toString()}");
+    }
+  }
+
+
+  Future<List<StoryModel>> getAllStories()async{
+        try {
+      QuerySnapshot response = await _firestore
+          .collection('storyUploads')
+          .where('isVideo', isEqualTo: false)
+          .get();
+
+      final allStories = response.docs.map((doc) {
+        return StoryModel.fromJson(doc.data() as Map<String, dynamic>);
+      }).toList();
+
+      return allStories;
+    } catch (e) {
+      throw Exception("Failed to fetch stories: $e");
+    }
+  }
+
+
+
+/////////////////////////////////// HOME SCREEN SECTION /////////////////////////////////////
+
+  Future<List<PostModel>> getAllPostsFromFireStore() async {
+    try {
+      QuerySnapshot response = await _firestore
+          .collection('allUploads')
+          .where('type', isEqualTo: 'post')
+          .get();
+
+      final allPosts = response.docs.map((doc) {
+        return PostModel.fromJson(doc.data() as Map<String, dynamic>);
+      }).toList();
+
+      return allPosts;
+    } catch (e) {
+      throw Exception("Failed to fetch posts: $e");
+    }
+  }
+
+  String sanitizeFileName(String fileName) {
+    return fileName
+        .replaceAll(RegExp(r'[^\w\s.-]'), '')
+        .replaceAll(' ', '_')
+        .toLowerCase();
+  }
+
+
+
 }

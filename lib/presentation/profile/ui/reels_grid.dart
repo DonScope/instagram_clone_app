@@ -18,6 +18,7 @@ class ReelsGrid extends StatelessWidget {
           final reels = state.reels;
 
           return GridView.builder(
+            physics: NeverScrollableScrollPhysics(  ),
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 3,
                 crossAxisSpacing: 4,

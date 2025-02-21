@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -40,13 +41,13 @@ class RegisterScreen extends StatelessWidget {
                     size: 20,
                   ),
                   CustomTextField(
-                    labelText: "Username",
+                    labelText: "username".tr(),
                     controller: _usernameController,
                     validator: Validators.validateUsername,
                   ),
                   const VerticalSpacer(size: 20),
                   CustomTextField(
-                    labelText: "Email",
+                    labelText: "email".tr(),
                     controller: _emailController,
                     validator: Validators.validateEmail,
                   ),
@@ -57,7 +58,7 @@ class RegisterScreen extends StatelessWidget {
                     valueListenable: _obscureTextNotifier,
                     builder: (context, value, child) {
                       return CustomTextField(
-                        labelText: "Password",
+                        labelText: "password".tr(),
                         controller: _passwordController,
                         obscureText: _obscureTextNotifier.value,
                         validator: Validators.validatePassword,
@@ -87,14 +88,14 @@ class RegisterScreen extends StatelessWidget {
                         );
                       } else if (state is RegisterSuccess) {
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text("Registration Success!"),
+                           SnackBar(
+                            content: Text("registration_success".tr()), 
                             backgroundColor: buttonPrimary,
                           ),
                         );
                         Navigator.of(context, rootNavigator: true).pop();
                         // NAVIGATE TO HOME SCREEN
-                        // NavigationHelper.goTo(context, const LoginScreen());
+                        NavigationHelper.goTo(context, const LoginScreen());
                       } else if (state is RegisterError) {
                         Navigator.of(context, rootNavigator: true).pop();
               
@@ -102,7 +103,7 @@ class RegisterScreen extends StatelessWidget {
                           context: context,
                           builder: (context) {
                             return AlertDialog(
-                              title: const Text('Registration failed'),
+                              title:  Text('registration_failed'.tr()),
                               content: Text(state.error),
                               actions: [
                                 TextButton(
@@ -121,7 +122,7 @@ class RegisterScreen extends StatelessWidget {
                     builder: (context, state) {
                       var cubit = AuthCubit.get(context);
                       return CustomButton(
-                          text: "Sign up",
+                          text: "sign_up".tr(),
                           onPressed: () {
                             if (_formKey.currentState!.validate()){
                                        cubit.signUpEmailPassword(
@@ -136,13 +137,13 @@ class RegisterScreen extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Text("Have an account?"),
+                       Text("have_account".tr()),
                       TextButton(
                         onPressed: () {
                           NavigationHelper.goTo(context, const LoginScreen());
                         },
-                        child: const Text(
-                          "Log in",
+                        child:  Text(
+                          "log_in".tr(),
                           style: TextStyle(
                               color: textPrimary, fontWeight: FontWeight.bold),
                         ),

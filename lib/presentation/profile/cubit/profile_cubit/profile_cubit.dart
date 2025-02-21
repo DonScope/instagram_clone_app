@@ -24,7 +24,7 @@ class ProfileCubit extends Cubit<ProfileState> {
 
 
       emit(ProfileFetchSuccess(userData));
-      log("//////////////////////////////////USER DATA FETCH///////////////////////////");
+      // log("//////////////////////////////////USER DATA FETCH///////////////////////////");
     } catch (e) {
       emit(ProfileFetchError(e.toString()));
     }
