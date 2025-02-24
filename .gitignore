@@ -41,3 +41,7 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Ignore Firebase credentials
+/firebase_service_key.json
+lib/core/web_services/firebase_service.dart
