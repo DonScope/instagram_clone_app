@@ -90,7 +90,6 @@ class RegisterScreen extends StatelessWidget {
                         ScaffoldMessenger.of(context).showSnackBar(
                            SnackBar(
                             content: Text("registration_success".tr()), 
-                            backgroundColor: buttonPrimary,
                           ),
                         );
                         Navigator.of(context, rootNavigator: true).pop();

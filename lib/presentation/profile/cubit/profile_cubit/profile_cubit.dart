@@ -30,4 +30,12 @@ class ProfileCubit extends Cubit<ProfileState> {
     }
   }
 
+  Future<void> followUser({required String targetUserId})async{
+    try{
+      await _userRepository.toggleFollow(targetUserId: targetUserId);
+    }catch(e){
+
+    }
+  }
+
 }

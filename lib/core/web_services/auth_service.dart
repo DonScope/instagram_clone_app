@@ -3,6 +3,7 @@ import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:instagram_clone_app/core/helpers/cache_helper.dart';
 import '../../data/models/user_model.dart';
 
@@ -74,6 +75,7 @@ final defaultPfpUrl = 'https://icrbvpqtwskkgenybdyk.supabase.co/storage/v1/objec
       UserModel userModel = UserModel(
         uId: uId,
         name: name,
+        fcmToken: await FirebaseMessaging.instance.getToken(),
         email: email,
         profilePicUrl: defaultPfpUrl,
         bio: bio,

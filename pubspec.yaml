@@ -28,11 +28,13 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
+  awesome_notifications: ^0.10.0
   chewie: ^1.10.0
   cloud_firestore: null
   cupertino_icons: ^1.0.8
   dio: ^5.7.0
   easy_localization: ^3.0.7+1
+  equatable: ^2.0.7
   firebase_auth: ^5.3.4
   firebase_core: ^3.9.0
   firebase_messaging: null
@@ -42,6 +44,7 @@ dependencies:
   flutter_screenutil: ^5.9.3
   get_thumbnail_video: ^0.7.3
   google_sign_in: ^6.2.2
+  googleapis_auth: ^1.6.0
   image_picker: ^1.1.2
   intl: 0.19.0
   mime: ^2.0.0

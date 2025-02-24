@@ -1,9 +1,11 @@
-
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:instagram_clone_app/config/app_colors/app_colors.dart';
+import 'package:instagram_clone_app/config/app_theme/cubit/theme_cubit.dart';
+import 'package:instagram_clone_app/config/app_theme/cubit/theme_state.dart';
+import 'package:instagram_clone_app/core/helpers/cache_helper.dart';
 import 'package:instagram_clone_app/core/helpers/post_picker_helper.dart';
 import 'package:instagram_clone_app/core/helpers/navigation_helper.dart';
 import 'package:instagram_clone_app/core/web_services/user_service.dart';
@@ -119,14 +121,14 @@ class ProfileScreen extends StatelessWidget {
                                         context,
                                         [
                                           ListTile(
-                                            leading: Icon(Icons.logout),
-                                            title: Text(
-                                              'log_out'.tr(),
-                                              style: TextStyle(color: error),
-                                            ),
-                                            onTap: () =>  AuthCubit.get(context)
-                                                  .logOut(context)
-                                          ),
+                                              leading: Icon(Icons.logout),
+                                              title: Text(
+                                                'log_out'.tr(),
+                                                style: TextStyle(color: error),
+                                              ),
+                                              onTap: () =>
+                                                  AuthCubit.get(context)
+                                                      .logOut(context)),
                                           ListTile(
                                             leading: Icon(Icons.language),
                                             title: Text(
@@ -145,7 +147,24 @@ class ProfileScreen extends StatelessWidget {
                                                           context)!
                                                       .setLocale(Locale("en"));
                                             },
-                                          )
+                                          ),
+                                          BlocBuilder<ThemeCubit,
+                                              ThemeState>(
+                                            builder: (context, state) {
+                                              var cubit = ThemeCubit.get(context);
+                                              return ListTile(
+                                                leading: Icon(Icons.change_circle_outlined),
+                                                title: Text(
+                                                  'change_theme'.tr(),
+                                                  style: TextStyle(
+                                                      color: textPrimary),
+                                                ),
+                                                onTap: () {
+                                               cubit.toggleTheme(!state.isDark);
+                                                },
+                                              );
+                                            },
+                                          ),
                                         ],
                                         "actions".tr());
                                   },
@@ -232,35 +251,6 @@ class ProfileScreen extends StatelessWidget {
                                 fontSize: 13.sp,
                               ),
                             ),
-                          ],
-                        ),
-                        VerticalSpacer(),
-                        Row(
-                          children: [
-                            // Container(
-                            //   width: 100.w,
-                            //   height: 40.h,
-                            //   child: Stack(
-                            //     children: List.generate(3, (index) {
-                            //       return Positioned(
-                            //         left: index * 20.0.w,
-                            //         child: CircleAvatar(
-                            //           radius: 20.r,
-                            //           backgroundImage: NetworkImage(
-                            //               data.profilePicUrl.toString()),
-                            //           backgroundColor: Colors.grey[200],
-                            //         ),
-                            //       );
-                            //     }),
-                            //   ),
-                            // ),
-                            // SizedBox(
-                            //     width: 250.w,
-                            //     child: Text(
-                            //       "Followed by username, username and 100 others",
-                            //       overflow: TextOverflow.ellipsis,
-                            //       maxLines: 2,
-                            //     ))
                           ],
                         ),
                         VerticalSpacer(),

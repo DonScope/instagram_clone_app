@@ -37,5 +37,6 @@
     "username_valid_error": "اسم المستخدم مطلوب",
     "username_valid_error2": "يجب أن يكون اسم المستخدم 3 أحرف على الأقل",
     "username_valid_error3": "اسم المستخدم موجود بالفعل",
-    "phone_valid_error": "أدخل رقم هاتف صالح"
+    "phone_valid_error": "أدخل رقم هاتف صالح",
+    "change_theme": "غيّر المظهر"
 }

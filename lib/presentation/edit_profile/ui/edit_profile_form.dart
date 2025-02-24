@@ -115,7 +115,7 @@ class EditProfileForm extends StatelessWidget {
               ),
             ),
             ProfileField(
-              label: "Name".tr(),
+              label: "name".tr(),
               controller: nameController,
             ),
             ProfileField(
@@ -124,7 +124,7 @@ class EditProfileForm extends StatelessWidget {
               validator: Validators.validateUsername,
             ),
             ProfileField(
-              label: "Bio",
+              label: "bio".tr(),
               controller: bioController,
             ),
             VerticalSpacer(size: 15.h),

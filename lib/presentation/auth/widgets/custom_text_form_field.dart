@@ -10,29 +10,32 @@ class CustomTextField extends StatelessWidget {
   final Widget? ic;
   final FormFieldValidator<String>? validator;
   final TextEditingController? controller;
-  const CustomTextField(
-      {super.key,
-      required this.labelText,
-      this.validator,
-      this.obscureText = false,
-      this.ic,
-      this.controller,
-      this.prefix});
+  final ValueChanged<String>? onChanged; // Optional onChanged callback
+
+  const CustomTextField({
+    super.key,
+    required this.labelText,
+    this.validator,
+    this.obscureText = false,
+    this.ic,
+    this.controller,
+    this.prefix,
+    this.onChanged, // Add onChanged to constructor
+  });
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
       style: TextStyle(color: textPrimary),
-      
       validator: validator,
       controller: controller,
       obscureText: obscureText,
+      onChanged: onChanged, // Pass onChanged to TextFormField
       decoration: InputDecoration(
-
         labelText: labelText,
         labelStyle: TextStyle(color: textSecondary),
-        prefixIcon: prefix != null ? prefix : null,
-        suffixIcon: ic != null ? ic : null,
+        prefixIcon: prefix,
+        suffixIcon: ic,
         suffixIconColor: iconPrimary,
         prefixIconColor: iconPrimary,
         hintStyle: TextStyle(
@@ -58,7 +61,7 @@ class CustomTextField extends StatelessWidget {
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(15.r),
           borderSide: BorderSide(
-            color:  borderFocused,
+            color: borderFocused,
             width: 2.0.w,
           ),
         ),

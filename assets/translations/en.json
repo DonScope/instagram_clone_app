@@ -37,5 +37,6 @@
     "username_valid_error": "Username is required",
     "username_valid_error2": "Username must be at least 3 characters long",
     "username_valid_error3": "Username already exists",
-    "phone_valid_error": "Enter a valid phone number"
+    "phone_valid_error": "Enter a valid phone number",
+     "change_theme": "Change Theme"
 }

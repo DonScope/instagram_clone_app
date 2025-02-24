@@ -8,8 +8,10 @@ class UserModel {
   int? followingCount;
   String? profilePicUrl;
   String? bio;
+  String? fcmToken;
 
   UserModel({
+    this.fcmToken,
     this.uId,
     this.email,
     this.name,
@@ -22,6 +24,7 @@ class UserModel {
   });
 
   UserModel.fromJson(Map<String, dynamic> json) {
+    fcmToken = json["fcmToken"];
     uId = json["uId"];
     name = json["name"];
     email = json["email"];
@@ -43,6 +46,7 @@ class UserModel {
       "profilePicUrl": profilePicUrl,
       "followersCount": followersCount,
       "followingCount": followingCount,
+      "fcmToken" : fcmToken,
       "bio": bio,
     };
   }

@@ -1,16 +1,19 @@
 import 'package:dio/dio.dart';
-import 'package:instagram_clone_app/core/helpers/cache_helper.dart';
+import 'package:instagram_clone_app/core/web_services/firebase_service.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
+
 class DioHelper {
   static Dio? dio;
 
-  static initDioHelper() {
+  static initDioHelper() async {
     dio = Dio(BaseOptions(
-        baseUrl: "https://icrbvpqtwskkgenybdyk.supabase.co",
+        baseUrl:
+            "https://fcm.googleapis.com/v1/projects/insta-app-ebc41/messages:send",
         receiveDataWhenStatusError: true,
-        headers: {
-          "Authorization": '${CacheHelper.getData(key: "token")}',
-        }));
+              headers: {
+        "Authorization": "Bearer ${await GetServerKey.getServerKeyToken()}",  // 🔹 Add OAuth 2.0 token
+      },
+       ));
 
     dio!.interceptors.add(PrettyDioLogger(
       requestHeader: true,
@@ -18,25 +21,20 @@ class DioHelper {
       responseBody: true,
       responseHeader: false,
       error: true,
+      compact: true,
     ));
   }
 
-  static Future<Response> getData(
-      {required String endPoint, Map<String, dynamic>? queryParameters}) async {
-    return await dio!.get(endPoint, queryParameters: queryParameters);
-  }
-
   static Future<Response> postData(
-      {required String endPoint, required dynamic data}) async {
-    return await dio!.post(endPoint, data: data);
-  }
-  static Future<Response> deleteData(
-      {required String endPoint}) async {
-    return await dio!.delete(endPoint);
-  }
-
-  static Future<Response> putData(
-      {required String endPoint, required dynamic data}) async {
-    return await dio!.put(endPoint, data: data);
+      String token, String title, String body) async {
+    return await dio!.post(
+      "",
+      data: {
+        "message": {
+          "token": token,
+          "notification": {"title": title, "body": body}
+        }
+      },
+    );
   }
 }

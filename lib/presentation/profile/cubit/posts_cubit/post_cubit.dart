@@ -28,10 +28,10 @@ class PostCubit extends Cubit<PostState> {
     }
   }
 
-  Future<void> getPosts() async {
+  Future<void> getPosts({String? userId}) async {
     try {
       emit(PostGetLoading());
-      final posts = await _userRepository.getPosts();
+      final posts = await _userRepository.getPosts(userId: userId);
       postLength = posts.length;
       log("Post REQUEST");
 
@@ -42,6 +42,8 @@ class PostCubit extends Cubit<PostState> {
       emit(PostGetError(error: e.toString()));
     }
   }
+
+  
 
 
 }

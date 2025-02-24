@@ -33,6 +33,11 @@ class NavigationBarScreeen extends StatelessWidget {
                       Icons.home_outlined,
                     ),
                     label: ""),
+                                  BottomNavigationBarItem(
+                    icon: Icon(
+                      Icons.search,
+                    ),
+                    label: ""),
                 BottomNavigationBarItem(
                     icon: Icon(
                       Icons.video_collection_outlined,

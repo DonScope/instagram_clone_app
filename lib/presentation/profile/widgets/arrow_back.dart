@@ -8,7 +8,7 @@ class ArrowBack extends StatelessWidget {
     return Container(
 
       child: IconButton(
-        icon: const Icon(Icons.arrow_back_ios_new, color: iconPrimary,),
+        icon: const Icon(Icons.arrow_back_ios_new,),
         onPressed: () {
           Navigator.of(context).pop();
         },

@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:instagram_clone_app/core/helpers/navigation_helper.dart';
 import 'package:instagram_clone_app/core/web_services/user_service.dart';
 import 'package:instagram_clone_app/data/repository/user_services/user_repository.dart';
+import 'package:instagram_clone_app/presentation/chat/ui/users_screen.dart';
 
 import 'package:instagram_clone_app/presentation/home/cubit/home_cubit.dart';
 import 'package:instagram_clone_app/presentation/home/widgets/placeholder_shimmer.dart';
@@ -20,68 +21,100 @@ class HomeScreen extends StatelessWidget {
     return Scaffold(
       body: SafeArea(
         child: BlocProvider(
-            create: (_) => HomeCubit(UserRepository(UserService()))..getAllPosts(),
+          create: (_) =>
+              HomeCubit(UserRepository(UserService()))..getAllPosts(),
           child: CustomScrollView(
             slivers: [
               SliverToBoxAdapter(
-                child: BlocBuilder<StoryCubit, StoryState>(
-                  builder: (context, state) {
-                    if (state is StoryGetSuccess) {
-                      final userList = state.stories.keys.toList();
-                      final storiesMap = state.stories;
-                      return SizedBox(
-                        height: 100,
-                        child: ListView.builder(
-                          scrollDirection: Axis.horizontal,
-                          itemCount: userList.length,
-                          itemBuilder: (context, index) {
-                            final user = userList[index];
-                            final userStories = storiesMap[user] ?? [];
-                            return GestureDetector(
-                              onTap: () => NavigationHelper.goTo(
-                                context,
-                                StoryViewScreen(
-                                  stories: userStories,
-                                  initialPage: 0,
-                                ),
-                              ),
-                              child: Container(
-                                margin:
-                                    const EdgeInsets.symmetric(horizontal: 8.0),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    CircleAvatar(
-                                      radius: 25,
-                                      backgroundImage:
-                                          NetworkImage(user.profilePicUrl!),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+                      child: Row(
+                        children: [
+                          SizedBox(
+                              width: 137.w,
+                              height: 65.h,
+                              child: Row(
+                                children: [
+                                  Image.asset(
+                                    "assets/instagram_logo_text_black.png",
+                                    fit: BoxFit.contain,
+                                  ),
+                                ],
+                              )),
+                          Spacer(),
+                          Icon(Icons.favorite_border_outlined),
+                          HorizontalSpacer(),
+                          GestureDetector(
+                              onTap: () {
+                                NavigationHelper.goTo(context, UsersScreen());
+                              },
+                              child: Icon(Icons.chat_bubble_outline_outlined)),
+                          HorizontalSpacer(),
+                          Icon(Icons.add),
+                        ],
+                      ),
+                    ),
+                    BlocBuilder<StoryCubit, StoryState>(
+                      builder: (context, state) {
+                        if (state is StoryGetSuccess) {
+                          final userList = state.stories.keys.toList();
+                          final storiesMap = state.stories;
+                          return SizedBox(
+                            height: 100,
+                            child: ListView.builder(
+                              scrollDirection: Axis.horizontal,
+                              itemCount: userList.length,
+                              itemBuilder: (context, index) {
+                                final user = userList[index];
+                                final userStories = storiesMap[user] ?? [];
+                                return GestureDetector(
+                                  onTap: () => NavigationHelper.goTo(
+                                    context,
+                                    StoryViewScreen(
+                                      stories: userStories,
+                                      initialPage: 0,
                                     ),
-                                    const SizedBox(height: 4),
-                                    Text(
-                                      user.name.toString(),
-                                      style: const TextStyle(fontSize: 12),
+                                  ),
+                                  child: Container(
+                                    margin: const EdgeInsets.symmetric(
+                                        horizontal: 8.0),
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        CircleAvatar(
+                                          radius: 25,
+                                          backgroundImage:
+                                              NetworkImage(user.profilePicUrl!),
+                                        ),
+                                        const SizedBox(height: 4),
+                                        Text(
+                                          user.name.toString(),
+                                          style: const TextStyle(fontSize: 12),
+                                        ),
+                                      ],
                                     ),
-                                  ],
-                                ),
-                              ),
-                            );
-                          },
-                        ),
-                      );
-                    } else if (state is StoryGetLoading) {
-                      return const SizedBox(
-                        height: 100,
-                        child: Center(child: CircularProgressIndicator()),
-                      );
-                    } else if (state is StoryGetError) {
-                      return const SizedBox(
-                        height: 100,
-                        child: Center(child: Text("Failed to load stories")),
-                      );
-                    }
-                    // If no stories or default state
-                    return const SizedBox.shrink();
-                  },
+                                  ),
+                                );
+                              },
+                            ),
+                          );
+                        } else if (state is StoryGetLoading) {
+                          return SizedBox.shrink();
+                        } else if (state is StoryGetError) {
+                          return const SizedBox(
+                            height: 100,
+                            child:
+                                Center(child: Text("Failed to load stories")),
+                          );
+                        }
+                        return const SizedBox.shrink();
+                      },
+                    ),
+                  ],
                 ),
               ),
               SliverToBoxAdapter(
@@ -128,8 +161,6 @@ class HomeScreen extends StatelessWidget {
                                   ],
                                 ),
                                 const VerticalSpacer(size: 5),
-
-                                // ── Post Media ──
                                 SizedBox(
                                   width: MediaQuery.of(context).size.width,
                                   height: 390.h,
@@ -139,8 +170,6 @@ class HomeScreen extends StatelessWidget {
                                   ),
                                 ),
                                 const VerticalSpacer(size: 10),
-
-                                // ── Post Actions & Likes ──
                                 Padding(
                                   padding:
                                       const EdgeInsets.symmetric(horizontal: 6),
@@ -148,6 +177,8 @@ class HomeScreen extends StatelessWidget {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
+                                      Text(post.caption.toString(), style: TextStyle(fontWeight: FontWeight.bold),),
+                                      VerticalSpacer(),
                                       Row(
                                         children: [
                                           GestureDetector(

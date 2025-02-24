@@ -9,10 +9,11 @@ class ProfileReelCubit extends Cubit<ProfileReelState> {
   ProfileReelCubit(this._userRepository) : super(ReelInitial());
   final UserRepository _userRepository;
   static ProfileReelCubit get(context) => BlocProvider.of(context);
-  Future<void> getReels() async {
+  
+  Future<void> getReels({String? userId}) async {
     try {
       emit(ReelsGetLoading());
-      final reels = await _userRepository.getReels();
+      final reels = await _userRepository.getReels(userId: userId);
 
       emit(ReelsGetSuccess(reels: reels));
     } catch (e) {

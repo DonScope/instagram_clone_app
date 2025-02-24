@@ -62,4 +62,8 @@ class AuthCubit extends Cubit<AuthState> {
       emit(LogoutError(e.toString()));
     }
   }
+
+
+
+  
 }
